@@ -3,280 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucky Invest — Premium Asset Optimization</title>
+    <title>Lucky Invest — Advanced Micro-Asset Engine</title>
     
-    <!-- Tailwind CSS & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
 
-    <!-- Premium Typography & Fine-Tuned Theme Overrides -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
         
         :root {
-            --bg-obsidian: #09090b;
-            --card-surface: #141417;
-            --card-border: rgba(255, 255, 255, 0.06);
-            --accent-mint: #05f3a2;
-            --accent-gold: #e2b86d;
+            --bg-pure-black: #020203;
+            --surface-deep: #0a0a0c;
+            --surface-card: #111115;
+            --border-muted: #1e1e24;
+            --accent-neon-green: #00ff87;
+            --accent-gold: #f5af19;
+            --text-high-contrast: #ffffff;
+            --text-muted: #71717a;
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--bg-obsidian);
-            color: #f4f4f5;
+            background-color: var(--bg-pure-black);
+            color: #e4e4e7;
             -webkit-tap-highlight-color: transparent;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
         }
 
         h1, h2, h3, h4, .font-display {
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        /* Pure Premium Glassmorphism */
-        .premium-card {
-            background: rgba(20, 20, 23, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
+        .premium-card-ui {
+            background: var(--surface-card);
+            border: 1px solid var(--border-muted);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .premium-card:hover {
-            border-color: rgba(255, 255, 255, 0.12);
+        .premium-card-ui:hover {
+            border-color: rgba(0, 255, 135, 0.25);
+            background: #14141a;
         }
 
-        /* Clean Toggle Switch */
         .toggle-checkbox:checked + .toggle-label {
-            background-color: var(--accent-mint);
+            background-color: var(--accent-neon-green);
         }
         .toggle-checkbox:checked + .toggle-label .toggle-dot {
             transform: translateX(100%);
-            background-color: #09090b;
+            background-color: var(--bg-pure-black);
         }
 
-        /* View Switcher Animations */
-        .app-view { display: none; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .app-view { display: none; animation: viewTransition 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .app-view.active { display: block; }
         
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(8px); }
+        @keyframes viewTransition {
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Subtle glow effects for high-tier assets */
-        .glow-mint { shadow: 0 0 20px rgba(5, 243, 162, 0.15); }
-        .glow-gold { shadow: 0 0 20px rgba(226, 184, 109, 0.15); }
+        .scrollbar-hidden::-webkit-scrollbar { display: none; }
+        .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="min-h-screen relative pb-28 text-zinc-200 selection:bg-zinc-800 selection:text-white">
+<body class="min-h-screen relative pb-32 selection:bg-zinc-800 selection:text-white">
 
-    <!-- NOTIFICATION LAYER -->
-    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex flex-col space-y-3 pointer-events-none w-[92%] max-w-md"></div>
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col space-y-2 pointer-events-none w-[94%] max-w-sm"></div>
 
-    <!-- ONBOARDING & ACCOUNT INITIALIZATION SCREEN -->
-    <section id="view-auth" class="fixed inset-0 z-50 bg-[#09090b] flex items-center justify-center p-6">
-        <div class="w-full max-w-sm p-8 rounded-3xl premium-card shadow-2xl relative">
-            <div class="text-center space-y-2 mb-8">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shadow-inner">
-                    <i data-lucide="layers" class="w-7 h-7 text-[#05f3a2]"></i>
+    <section id="view-auth" class="fixed inset-0 z-50 bg-[#020203] flex items-center justify-center p-4">
+        <div class="w-full max-w-md p-6 rounded-2xl bg-[#0a0a0c] border border-[#1e1e24] shadow-2xl relative">
+            <div class="text-center space-y-2 mb-6">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-[#00ff87]"></i>
                 </div>
                 <h1 class="text-2xl font-display font-bold text-white tracking-tight">Lucky Invest</h1>
-                <p class="text-xs text-zinc-400">Acquire yield-bearing assets. Monitor hourly distribution.</p>
+                <p class="text-xs text-zinc-500">Enter credential profiles to initialize secure ledger instance</p>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Profile Name</label>
-                    <input type="text" id="auth-name" class="w-full mt-1.5 p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-medium focus:border-zinc-500 outline-none transition-all placeholder:text-zinc-600 text-sm" placeholder="Enter full name" />
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">Legal Identity Title</label>
+                    <input type="text" id="auth-name" class="w-full p-3.5 bg-[#111115] border border-[#1e1e24] rounded-xl text-white text-sm outline-none focus:border-zinc-500 transition-all placeholder:text-zinc-700" placeholder="e.g., John Doe" />
                 </div>
                 
                 <div>
-                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Email Address</label>
-                    <input type="email" id="auth-email" class="w-full mt-1.5 p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-medium focus:border-zinc-500 outline-none transition-all placeholder:text-zinc-600 text-sm" placeholder="investor@domain.com" />
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">Communications Terminal Email</label>
+                    <input type="email" id="auth-email" class="w-full p-3.5 bg-[#111115] border border-[#1e1e24] rounded-xl text-white text-sm outline-none focus:border-zinc-500 transition-all placeholder:text-zinc-700" placeholder="investor@domain.com" />
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Regional Currency Configuration</label>
-                    <div class="relative mt-1.5">
-                        <select id="auth-currency" onchange="updateCurrencySymbol()" class="w-full p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-medium focus:border-zinc-500 outline-none appearance-none text-sm cursor-pointer">
-                            <option value="KES">KES — Kenyan Shilling</option>
-                            <option value="NGN">NGN — Nigerian Naira</option>
-                            <option value="USD">USD — US Dollar</option>
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">Base Currency Node</label>
+                    <div class="relative">
+                        <select id="auth-currency" onchange="updateCurrencySymbol()" class="w-full p-3.5 bg-[#111115] border border-[#1e1e24] rounded-xl text-white text-sm outline-none appearance-none cursor-pointer">
+                            <option value="KES">KES — Kenyan Shilling Node</option>
+                            <option value="NGN">NGN — Nigerian Naira Node</option>
+                            <option value="USD">USD — US Dollar Global Node</option>
                         </select>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                     </div>
                 </div>
 
-                <button onclick="login()" class="w-full mt-4 py-4 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all shadow-md">
-                    Initialize Workspace
+                <button onclick="login()" class="w-full mt-2 py-3.5 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-zinc-200 transition-all shadow-md">
+                    Synchronize Environment
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- PREMIUM COMPACT HEADER -->
-    <header class="sticky top-0 z-40 bg-[#09090b]/80 backdrop-blur-md border-b border-zinc-900 px-6 py-4 flex items-center justify-between max-w-md mx-auto">
-        <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-                <i data-lucide="layers" class="w-5 h-5 text-[#05f3a2]"></i>
+    <header class="sticky top-0 z-40 bg-[#020203]/90 backdrop-blur-md border-b border-[#1e1e24] px-4 py-3 flex items-center justify-between max-w-md mx-auto">
+        <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                <i data-lucide="component" class="w-4 h-4 text-[#00ff87]"></i>
             </div>
             <div>
-                <h2 class="text-base font-display font-bold text-white tracking-tight">Lucky Invest</h2>
-                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest" id="user-greeting">System Idle</p>
+                <h2 class="text-sm font-display font-bold text-white tracking-tight">Lucky Invest</h2>
+                <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-wider" id="user-greeting">System Inactive</p>
             </div>
         </div>
         
-        <!-- Modern Environment Toggles -->
-        <div class="flex bg-zinc-900/80 p-0.5 rounded-xl border border-zinc-800/80">
-            <button onclick="switchEnv('demo')" id="btn-demo" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-zinc-800 text-white transition-all">Demo</button>
-            <button onclick="switchEnv('real')" id="btn-real" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all">Real</button>
+        <div class="flex bg-zinc-900 p-0.5 rounded-lg border border-zinc-800">
+            <button onclick="switchEnv('demo')" id="btn-demo" class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider bg-zinc-800 text-white transition-all">Demo</button>
+            <button onclick="switchEnv('real')" id="btn-real" class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all">Real</button>
         </div>
     </header>
 
-    <!-- STRUCTURAL MAIN ELEMENT -->
-    <main class="max-w-md mx-auto p-5 space-y-6">
+    <main class="max-w-md mx-auto p-4 space-y-5">
 
-        <!-- DASHBOARD HUB -->
-        <section id="view-dashboard" class="app-view active space-y-6">
+        <section id="view-dashboard" class="app-view active space-y-5">
             
-            <!-- Minimalist Premium Metric Display -->
-            <div class="p-6 rounded-3xl bg-zinc-900/40 border border-zinc-800 relative overflow-hidden">
+            <div class="p-5 rounded-2xl bg-[#0a0a0c] border border-[#1e1e24] relative overflow-hidden">
                 <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Liquid Asset Vault</span>
-                    <span id="env-badge" class="text-[9px] font-bold px-2 py-0.5 bg-zinc-800 border border-zinc-700 text-zinc-400 rounded-md uppercase tracking-wider">Demo Ledger</span>
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Liquid Asset Vault</span>
+                    <span id="env-badge" class="text-[8px] font-bold px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded uppercase tracking-wider">Demo Instance</span>
                 </div>
                 
-                <h1 class="text-3xl font-display font-bold text-white tracking-tight mb-6">
-                    <span class="currency-symbol text-zinc-500 font-sans text-xl mr-1">KES</span><span id="display-balance" class="text-zinc-50">10,000.00</span>
+                <h1 class="text-2xl font-display font-bold text-white tracking-tight mb-4">
+                    <span class="currency-symbol text-zinc-600 text-base font-sans mr-0.5">KES</span><span id="display-balance" class="text-white">10,000.00</span>
                 </h1>
 
-                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-800/60">
+                <div class="grid grid-cols-2 gap-3 pt-3.5 border-t border-zinc-900">
                     <div>
-                        <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Asset Allocation</span>
-                        <div class="text-sm font-semibold text-zinc-200">
-                            <span class="currency-symbol text-zinc-500 text-xs mr-0.5">KES</span><span id="display-assets-value">0.00</span>
+                        <span class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest block mb-0.5">Asset Allocation</span>
+                        <div class="text-xs font-semibold text-zinc-300">
+                            <span class="currency-symbol text-zinc-600 text-[10px] mr-0.5">KES</span><span id="display-assets-value">0.00</span>
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Combined Yield</span>
-                        <div class="text-sm font-bold text-[#05f3a2] flex items-center justify-end">
-                            +<span class="currency-symbol text-[11px] mr-0.5">KES</span><span id="display-hourly-yield">0.00</span><span class="text-[9px] text-zinc-500 font-medium ml-1">/hr</span>
+                        <span class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest block mb-0.5">Yield Velocity</span>
+                        <div class="text-xs font-bold text-[#00ff87] flex items-center justify-end">
+                            +<span class="currency-symbol text-[10px] mr-0.5">KES</span><span id="display-hourly-yield">0.00</span><span class="text-[8px] text-zinc-500 font-medium ml-0.5">/hr</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Optimization Switch -->
-            <div class="p-4 rounded-2xl bg-zinc-900/20 border border-zinc-900 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-zinc-900/60 flex items-center justify-center border border-zinc-800/60">
-                        <i data-lucide="git-merge" class="w-4 h-4 text-[#e2b86d]"></i>
+            <div id="capacity-upgrade-banner" class="p-4 rounded-xl border border-dashed border-zinc-800 bg-zinc-950 flex flex-col space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center">
+                            <i data-lucide="activity" class="w-4 h-4 text-[#f5af19]"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Live Operations Limit</h4>
+                            <p class="text-[10px] text-zinc-500"><span id="active-slots-count">0</span> of <span id="max-slots-count">3</span> slots currently utilized</p>
+                        </div>
+                    </div>
+                    <button id="btn-upgrade-slots" onclick="upgradeLiveCapacity()" class="px-3 py-1.5 rounded-lg bg-white text-black font-bold text-[9px] uppercase tracking-wider transition-all hover:bg-zinc-200">
+                        Expand to 4 Live (100 KES)
+                    </button>
+                </div>
+                <div class="w-full bg-zinc-900 rounded-full h-1 overflow-hidden">
+                    <div id="slots-progress-bar" class="bg-[#f5af19] h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-[#0a0a0c] border border-[#1e1e24] flex items-center justify-between">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center">
+                        <i data-lucide="refresh-ccw" class="w-3.5 h-3.5 text-[#00ff87]"></i>
                     </div>
                     <div>
-                        <h3 class="text-xs font-bold text-white">Automate Compounding</h3>
-                        <p class="text-[10px] text-zinc-500">Instantly convert liquid distribution into assets</p>
+                        <h3 class="text-xs font-bold text-white">Automated Micro-Compounding</h3>
+                        <p class="text-[10px] text-zinc-500">Auto-convert returns to Drone units instantly</p>
                     </div>
                 </div>
-                <div class="relative inline-block w-10 align-middle select-none">
+                <div class="relative inline-block w-8 align-middle select-none">
                     <input type="checkbox" id="toggle-compound" class="toggle-checkbox hidden"/>
-                    <label for="toggle-compound" class="toggle-label block overflow-hidden h-5 rounded-full bg-zinc-800 cursor-pointer transition-colors duration-200">
-                        <span class="toggle-dot block w-3 h-3 rounded-full bg-zinc-500 m-1 transform transition-transform duration-200"></span>
+                    <label for="toggle-compound" class="toggle-label block overflow-hidden h-4 rounded-full bg-zinc-800 cursor-pointer transition-colors duration-200">
+                        <span class="toggle-dot block w-2.5 h-2.5 rounded-full bg-zinc-500 m-0.5 transform transition-transform duration-200"></span>
                     </label>
                 </div>
             </div>
 
-            <!-- Hourly Countdown Metric -->
-            <div class="p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800 text-center">
-                <div class="flex items-center justify-between text-left">
-                    <div>
-                        <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Next Distribution Cycle</p>
-                        <h2 id="countdown-timer" class="text-xl font-display font-bold text-white tracking-wider font-mono mt-0.5">59:59</h2>
-                    </div>
-                    <div class="w-24 bg-zinc-900 border border-zinc-800 rounded-full h-2 overflow-hidden relative">
-                        <div id="countdown-progress" class="bg-[#05f3a2] h-full transition-all duration-1000" style="width: 100%"></div>
-                    </div>
+            <div class="p-4 rounded-xl bg-[#0a0a0c] border border-[#1e1e24] flex items-center justify-between">
+                <div>
+                    <p class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Next Distribution Interval</p>
+                    <h2 id="countdown-timer" class="text-lg font-display font-bold text-white tracking-wider font-mono mt-0.5">59:59</h2>
+                </div>
+                <div class="w-20 bg-zinc-900 border border-zinc-800 rounded-full h-1.5 overflow-hidden">
+                    <div id="countdown-progress" class="bg-[#00ff87] h-full transition-all duration-1000" style="width: 100%"></div>
                 </div>
             </div>
 
-            <!-- Active Assets Ledger -->
-            <div class="space-y-3">
-                <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center">
-                    <i data-lucide="box" class="w-3.5 h-3.5 mr-1.5 text-zinc-600"></i> Allocated Holdings
+            <div class="space-y-2.5">
+                <h3 class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex items-center">
+                    <i data-lucide="box" class="w-3 h-3 mr-1.5 text-zinc-600"></i> Active Allocated Holdings
                 </h3>
-                <div id="my-goods-list" class="space-y-2.5">
-                    <!-- Loaded dynamically via JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- MARKET / PRE-ORDER MARKETPLACE -->
-        <section id="view-market" class="app-view space-y-5">
-            <div class="space-y-1">
-                <h2 class="text-xl font-display font-bold text-white">Asset Acquisition</h2>
-                <p class="text-xs text-zinc-400">Deploy capital into high-yield infrastructural and digital operations.</p>
-            </div>
-
-            <div id="market-goods-container" class="grid grid-cols-1 gap-3.5">
-                <!-- Assets injected dynamically via JS -->
-            </div>
-        </section>
-
-        <!-- CAPITAL INFLOW (DEPOSIT) -->
-        <section id="view-deposit" class="app-view space-y-6">
-            <div class="p-6 rounded-3xl bg-zinc-900/30 border border-zinc-800 space-y-6">
-                <div class="text-center space-y-2">
-                    <div class="w-12 h-12 mx-auto rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-                        <i data-lucide="plus-circle" class="w-5 h-5 text-[#05f3a2]"></i>
+                <div id="my-goods-list" class="space-y-2">
                     </div>
-                    <h2 class="text-lg font-display font-bold text-white">Inflow Portal</h2>
-                    <p class="text-[11px] text-zinc-400">Minimum structural capitalization requirement: <span class="text-white font-semibold"><span class="currency-symbol">KES</span> <span id="min-deposit-label">500</span></span></p>
+            </div>
+        </section>
+
+        <section id="view-market" class="app-view space-y-4">
+            <div class="space-y-0.5">
+                <h2 class="text-lg font-display font-bold text-white">Operational Micro-Assets</h2>
+                <p class="text-xs text-zinc-500">Deploy liquid allocations across 52 precision engineering sectors.</p>
+            </div>
+
+            <div id="market-goods-container" class="grid grid-cols-1 gap-2.5 max-h-[60vh] overflow-y-auto pr-1 scrollbar-hidden">
+                </div>
+        </section>
+
+        <section id="view-profile" class="app-view space-y-4">
+            <div class="space-y-0.5">
+                <h2 class="text-lg font-display font-bold text-white">Investor Workspace Profile</h2>
+                <p class="text-xs text-zinc-500">Comprehensive framework registry and configuration controls.</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-[#0a0a0c] border border-[#1e1e24] space-y-4">
+                <div class="flex items-center space-x-3 pb-4 border-b border-zinc-900">
+                    <div class="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5 text-[#00ff87]"></i>
+                    </div>
+                    <div>
+                        <h3 id="prof-display-name" class="text-sm font-bold text-white">Unregistered Node</h3>
+                        <p id="prof-display-email" class="text-xs text-zinc-500">awaiting@synchronization.com</p>
+                    </div>
                 </div>
 
-                <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="p-3 bg-zinc-950 border border-zinc-900 rounded-xl">
+                        <span class="text-[8px] font-bold text-zinc-500 uppercase block mb-1">Currency Node</span>
+                        <span id="prof-currency" class="font-bold text-zinc-300">KES</span>
+                    </div>
+                    <div class="p-3 bg-zinc-950 border border-zinc-900 rounded-xl">
+                        <span class="text-[8px] font-bold text-zinc-500 uppercase block mb-1">Operation Limits</span>
+                        <span id="prof-slots" class="font-bold text-zinc-300">Max 3 Live Assets</span>
+                    </div>
+                    <div class="p-3 bg-zinc-950 border border-zinc-900 rounded-xl">
+                        <span class="text-[8px] font-bold text-zinc-500 uppercase block mb-1">Verification Status</span>
+                        <span id="prof-verification" class="font-bold text-[#f5af19]">Identity Pending</span>
+                    </div>
+                    <div class="p-3 bg-zinc-950 border border-zinc-900 rounded-xl">
+                        <span class="text-[8px] font-bold text-zinc-500 uppercase block mb-1">Architecture Environment</span>
+                        <span id="prof-env" class="font-bold text-zinc-300">SANDBOX_DEMO</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-deposit" class="app-view space-y-5">
+            <div class="p-5 rounded-2xl bg-[#0a0a0c] border border-[#1e1e24] space-y-5">
+                <div class="text-center space-y-1">
+                    <div class="w-10 h-10 mx-auto rounded-full bg-zinc-900 flex items-center justify-center">
+                        <i data-lucide="arrow-down-left" class="w-4 h-4 text-[#00ff87]"></i>
+                    </div>
+                    <h2 class="text-base font-display font-bold text-white">Inflow Portal Configuration</h2>
+                    <p class="text-[11px] text-zinc-500">Minimum structural capital initialization: <span class="text-white font-semibold"><span class="currency-symbol">KES</span> <span id="min-deposit-label">500</span></span></p>
+                </div>
+
+                <div class="space-y-3.5">
                     <div>
-                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Capital Allocation Size</label>
-                        <div class="relative mt-1.5">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-zinc-600 currency-symbol">KES</span>
-                            <input type="number" id="input-deposit" placeholder="0.00" class="w-full p-4 pl-14 bg-zinc-900 border border-zinc-800 rounded-xl text-lg font-display font-bold text-white focus:border-zinc-600 outline-none transition-all placeholder:text-zinc-800" />
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Allocation Dimension Size</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-600 currency-symbol">KES</span>
+                            <input type="number" id="input-deposit" placeholder="0.00" class="w-full p-3.5 pl-14 bg-[#111115] border border-[#1e1e24] rounded-xl text-base font-display font-bold text-white focus:border-zinc-700 outline-none transition-all placeholder:text-zinc-800" />
                         </div>
                     </div>
 
-                    <button onclick="processDeposit()" class="w-full py-4 rounded-xl bg-[#05f3a2] text-black font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all">
-                        Execute External Capital Inflow
+                    <button onclick="processDeposit()" class="w-full py-3.5 rounded-xl bg-[#00ff87] text-black font-bold text-xs uppercase tracking-widest hover:opacity-90 transition-all">
+                        Execute External Capital Integration
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- CAPITAL OUTFLOW (WITHDRAWAL) -->
-        <section id="view-withdraw" class="app-view space-y-6">
-            <div class="p-6 rounded-3xl bg-zinc-900/30 border border-zinc-800 space-y-6">
-                <div class="text-center space-y-2">
-                    <div class="w-12 h-12 mx-auto rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-                        <i data-lucide="external-link" class="w-5 h-5 text-[#e2b86d]"></i>
+        <section id="view-withdraw" class="app-view space-y-5">
+            <div class="p-5 rounded-2xl bg-[#0a0a0c] border border-[#1e1e24] space-y-5">
+                <div class="text-center space-y-1">
+                    <div class="w-10 h-10 mx-auto rounded-full bg-zinc-900 flex items-center justify-center">
+                        <i data-lucide="arrow-up-right" class="w-4 h-4 text-[#f5af19]"></i>
                     </div>
-                    <h2 class="text-lg font-display font-bold text-white">Liquidation Chamber</h2>
-                    <p class="text-[11px] text-zinc-400">Minimum standard payout constraint: <span class="text-white font-semibold"><span class="currency-symbol">KES</span> <span id="min-withdraw-label">30,000</span></span></p>
+                    <h2 class="text-base font-display font-bold text-white">Liquidation Chamber Request</h2>
+                    <p class="text-[11px] text-zinc-500">Minimum allowable payout limit structure: <span class="text-white font-semibold"><span class="currency-symbol">KES</span> <span id="min-withdraw-label">30,000</span></span></p>
                 </div>
 
-                <div class="space-y-4">
+                <div class="space-y-3.5">
                     <div>
-                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Liquidation Quantity</label>
-                        <div class="relative mt-1.5">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-zinc-600 currency-symbol">KES</span>
-                            <input type="number" id="input-withdraw" placeholder="0.00" class="w-full p-4 pl-14 bg-zinc-900 border border-zinc-800 rounded-xl text-lg font-display font-bold text-white focus:border-zinc-600 outline-none transition-all placeholder:text-zinc-800" />
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Liquidation Quantity Block</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-600 currency-symbol">KES</span>
+                            <input type="number" id="input-withdraw" placeholder="0.00" class="w-full p-3.5 pl-14 bg-[#111115] border border-[#1e1e24] rounded-xl text-base font-display font-bold text-white focus:border-zinc-700 outline-none transition-all placeholder:text-zinc-800" />
                         </div>
-                        <p class="text-[10px] text-zinc-500 mt-2 ml-1">Liquid Capacity Available: <span class="currency-symbol">KES</span> <span id="avail-withdraw-balance">0.00</span></p>
+                        <p class="text-[10px] text-zinc-500 mt-1.5 ml-1">Liquid Capacity Available: <span class="currency-symbol text-zinc-600">KES</span> <span id="avail-withdraw-balance" class="text-zinc-400">0.00</span></p>
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Destination Target Registry</label>
-                        <input type="text" id="input-withdraw-dest" placeholder="Mobile Ledger Number / Account ID" class="w-full mt-1.5 p-4 bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-medium text-white focus:border-zinc-600 outline-none transition-all placeholder:text-zinc-700" />
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Target Account Destination Ledger ID</label>
+                        <input type="text" id="input-withdraw-dest" placeholder="Mobile Number / Payment Registry Code" class="w-full p-3.5 bg-[#111115] border border-[#1e1e24] rounded-xl text-xs font-medium text-white focus:border-zinc-700 outline-none transition-all placeholder:text-zinc-800" />
                     </div>
 
-                    <button onclick="processWithdraw()" class="w-full py-4 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all">
-                        Authorize Asset Liquidation
+                    <div>
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Mandatory Validation Credentials Document (.PNG / .JPG / .PDF)</label>
+                        <div class="flex items-center justify-center w-full">
+                            <label class="flex flex-col items-center justify-center w-full h-24 border border-dashed border-[#1e1e24] bg-[#111115] rounded-xl cursor-pointer hover:border-zinc-700 transition-all">
+                                <div class="flex flex-col items-center justify-center pt-3 pb-3">
+                                    <i data-lucide="upload-cloud" class="w-6 h-6 text-zinc-500 mb-1"></i>
+                                    <p class="text-[10px] text-zinc-400 font-semibold" id="id-upload-label">Select Valid National ID Document File</p>
+                                    <p class="text-[8px] text-zinc-600 mt-0.5">Maximum validation object length requirement: 10MB</p>
+                                </div>
+                                <input type="file" id="input-withdraw-id" accept="image/*,application/pdf" class="hidden" onchange="handleIdFileSelect(this)" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="processWithdraw()" class="w-full py-3.5 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-zinc-200 transition-all">
+                        Authorize Liquidation Settlement
                     </button>
                 </div>
             </div>
@@ -284,31 +336,32 @@
 
     </main>
 
-    <!-- MINIMAL SEAMLESS NAV BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#09090b]/90 backdrop-blur-md border-t border-zinc-900 pb-safe">
-        <div class="max-w-md mx-auto grid grid-cols-4 px-3 py-3">
-            <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex flex-col items-center space-y-1 text-[#05f3a2]">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Vault</span>
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#020203]/95 backdrop-blur-md border-t border-[#1e1e24] pb-safe">
+        <div class="max-w-md mx-auto grid grid-cols-5 px-1 py-2.5">
+            <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex flex-col items-center space-y-1 text-[#00ff87]">
+                <i data-lucide="box" class="w-4 h-4"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wider">Vault</span>
             </button>
             <button onclick="navTo('market')" id="nav-market" class="flex flex-col items-center space-y-1 text-zinc-600 hover:text-zinc-400 transition-colors">
-                <i data-lucide="plus-square" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Acquire</span>
+                <i data-lucide="layers" class="w-4 h-4"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wider">Catalog</span>
+            </button>
+            <button onclick="navTo('profile')" id="nav-profile" class="flex flex-col items-center space-y-1 text-zinc-600 hover:text-zinc-400 transition-colors">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wider">Profile</span>
             </button>
             <button onclick="navTo('deposit')" id="nav-deposit" class="flex flex-col items-center space-y-1 text-zinc-600 hover:text-zinc-400 transition-colors">
-                <i data-lucide="arrow-down-left" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Inflow</span>
+                <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wider">Inflow</span>
             </button>
             <button onclick="navTo('withdraw')" id="nav-withdraw" class="flex flex-col items-center space-y-1 text-zinc-600 hover:text-zinc-400 transition-colors">
-                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Payout</span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wider">Payout</span>
             </button>
         </div>
     </nav>
 
-    <!-- RE-ENGINEERED APPLICATION ARCHITECTURE -->
     <script>
-        // Initialization
         lucide.createIcons();
 
         const PAYSTACK_KEY = 'pk_live_ebbc4bdc1da0f8fc075bae6ce78da4f9c89552bc';
@@ -319,12 +372,69 @@
             USD: { symbol: '$', minDep: 5, minWith: 250, rate: 0.0075 }
         };
 
-        // Upgraded Physical, Infrastructure, and Operational High-Yield Assets
+        // Complete 52 High-Yield Operational Micro-Asset Catalog Dataset
         const GOODS_CATALOG = [
-            { id: 'g1', name: 'Automated Logistics Drone Unit', icon: 'send', cost: 1200, hourlyYield: 25, color: 'mint' },
-            { id: 'g2', name: 'Solar Micro-Grid Infrastructure Block', icon: 'sun', cost: 6000, hourlyYield: 135, color: 'gold' },
-            { id: 'g3', name: 'Fulfillment Hub Robotic Conveyor', icon: 'cpu', cost: 18000, hourlyYield: 420, color: 'mint' },
-            { id: 'g4', name: 'Autonomous EV Long-Haul Fleet Share', icon: 'truck', cost: 55000, hourlyYield: 1400, color: 'gold' }
+            // Logistics & Unmanned Transit Nodes (1-10)
+            { id: 'g1', name: 'Automated Logistics Drone Unit', cost: 1200, hourlyYield: 25, icon: 'send' },
+            { id: 'g2', name: 'Autonomous Forklift Tier-1 Chassis', cost: 2500, hourlyYield: 55, icon: 'truck' },
+            { id: 'g3', name: 'Precision Conveyor Sorting Array', cost: 4000, hourlyYield: 90, icon: 'shuffle' },
+            { id: 'g4', name: 'Fulfillment Station Scanners Node', cost: 5500, hourlyYield: 125, icon: 'scan' },
+            { id: 'g5', name: 'Regional Last-Mile Delivery Cargo Pod', cost: 7500, hourlyYield: 180, icon: 'package-open' },
+            { id: 'g6', name: 'Inter-City Freight Transit Node Core', cost: 10000, hourlyYield: 250, icon: 'milestone' },
+            { id: 'g7', name: 'Cold-Chain Refrigerated Rail Unit', cost: 13500, hourlyYield: 350, icon: 'thermometer-snowflake' },
+            { id: 'g8', name: 'Port Crane Automated Container Hitch', cost: 17000, hourlyYield: 450, icon: 'anchor' },
+            { id: 'g9', name: 'Autonomous EV Long-Haul Fleet Share', cost: 22000, hourlyYield: 600, icon: 'truck' },
+            { id: 'g10', name: 'Supersonic Cargo Transporter Engine Subsystem', cost: 30000, hourlyYield: 850, icon: 'plane-takeoff' },
+
+            // Infrastructure & Green Resource Blocks (11-20)
+            { id: 'g11', name: 'Solar Micro-Grid Infrastructure Block', cost: 1500, hourlyYield: 32, icon: 'sun' },
+            { id: 'g12', name: 'Kinetic Energy Hardened Grid Module', cost: 3200, hourlyYield: 72, icon: 'zap' },
+            { id: 'g13', name: 'Hydroelectric Micro-Turbine Propeller', cost: 4800, hourlyYield: 110, icon: 'waves' },
+            { id: 'g14', name: 'Geothermal Thermal Vent Exchanger', cost: 6500, hourlyYield: 155, icon: 'flame' },
+            { id: 'g15', name: 'Biomass Organic Re-Generator Silo', cost: 8800, hourlyYield: 215, icon: 'leaf' },
+            { id: 'g16', name: 'Offshore Wind Farm Turbine Anchor', cost: 11500, hourlyYield: 295, icon: 'wind' },
+            { id: 'g17', name: 'Subterranean Aquifer Smart Pumping Station', cost: 15000, hourlyYield: 400, icon: 'droplet' },
+            { id: 'g18', name: 'High-Voltage Solid State Storage Stack', cost: 19500, hourlyYield: 540, icon: 'battery-charging' },
+            { id: 'g19', name: 'Industrial Solid Waste Reclamation Cell', cost: 26000, hourlyYield: 730, icon: 'recycle' },
+            { id: 'g20', name: 'Fusion Core Primary Magnetic Limiter Share', cost: 38000, hourlyYield: 1120, icon: 'orbit' },
+
+            // Computation, Automation & Communication Racks (21-30)
+            { id: 'g21', name: 'Fulfillment Hub Robotic Conveyor Unit', cost: 1800, hourlyYield: 40, icon: 'cpu' },
+            { id: 'g22', name: 'Distributed Mesh Protocol Network Node', cost: 3500, hourlyYield: 80, icon: 'rss' },
+            { id: 'g23', name: 'Localized Compute Matrix Framework Array', cost: 5200, hourlyYield: 125, icon: 'server' },
+            { id: 'g24', name: 'Quantum Cryptographic Verification Module', cost: 7000, hourlyYield: 175, icon: 'key-round' },
+            { id: 'g25', name: 'AI Optimization Inference Co-Processor Block', cost: 9500, hourlyYield: 245, icon: 'binary' },
+            { id: 'g26', name: 'Low Earth Orbit Telecom Satellite Antenna', cost: 12800, hourlyYield: 340, icon: 'satellite' },
+            { id: 'g27', name: 'Optical Holographic Interconnect Pipeline', cost: 16500, hourlyYield: 460, icon: 'cable' },
+            { id: 'g28', name: 'High-Frequency Sub-Millimeter Radio Array', cost: 21000, hourlyYield: 610, icon: 'radio' },
+            { id: 'g29', name: 'Subsea Fiber Transceiver Amplifier Node', cost: 28500, hourlyYield: 860, icon: 'globe' },
+            { id: 'g30', name: 'Autonomous Mainframe Cooling Condenser Array', cost: 42000, hourlyYield: 1320, icon: 'snowflake' },
+
+            // Precision Agriculture & Eco-Production Synthesizers (31-40)
+            { id: 'g31', name: 'Hydroponic Automated Nutrient Injector', cost: 2000, hourlyYield: 45, icon: 'sprout' },
+            { id: 'g32', name: 'Vertical Farm LED Photonic Tube Bank', cost: 3800, hourlyYield: 90, icon: 'lightbulb' },
+            { id: 'g33', name: 'Smart Moisture Analysis Subsoil Probe Cluster', cost: 5600, hourlyYield: 138, icon: 'gauge' },
+            { id: 'g34', name: 'Automated Crop Pollinator Drone Squad', cost: 7800, hourlyYield: 200, icon: 'bug' },
+            { id: 'g35', name: 'Botanical Desalination Osmosis Intake Valve', cost: 10500, hourlyYield: 280, icon: 'filter' },
+            { id: 'g36', name: 'Aeroponic Root Mist Generator Compressor', cost: 14000, hourlyYield: 390, icon: 'cloud-lightning' },
+            { id: 'g37', name: 'Bio-Polymer Synthesis Cultivator Basin', cost: 18500, hourlyYield: 530, icon: 'flask' },
+            { id: 'g38', name: 'Autonomous Tractor Navigation Array Module', cost: 24000, hourlyYield: 710, icon: 'compass' },
+            { id: 'g39', name: 'Macro-Nutrient Silo Feed Extruder Mechanism', cost: 32000, hourlyYield: 980, icon: 'layers' },
+            { id: 'g40', name: 'Atmospheric Carbon Extractor Fan Framework', cost: 48000, hourlyYield: 1550, icon: 'wind' },
+
+            // Heavy Manufacturing & Metrology Arrays (41-52)
+            { id: 'g41', name: 'Additive 3D Molecular Matrix Jet Component', cost: 2200, hourlyYield: 50, icon: 'printer' },
+            { id: 'g42', name: 'Laser Interferometer Fine Calibration Arm', cost: 4200, hourlyYield: 100, icon: 'scissors' },
+            { id: 'g43', name: 'Ultrasonic Structural Crack Defect Detector', cost: 6000, hourlyYield: 150, icon: 'activity' },
+            { id: 'g44', name: 'Pneumatic Actuator Heavy Manipulator Joint', cost: 8400, hourlyYield: 220, icon: 'anvil' },
+            { id: 'g45', name: 'Graphene Layer Dispersion Coating Chamber', cost: 11000, hourlyYield: 300, icon: 'layers' },
+            { id: 'g46', name: 'Cryogenic Structural Tempering Pressure Tank', cost: 15500, hourlyYield: 440, icon: 'cylinder' },
+            { id: 'g47', name: 'Induction Arc Smelter Power Regulation Module', cost: 20000, hourlyYield: 580, icon: 'coined' },
+            { id: 'g48', name: 'High-Speed Precision Kinetic Milling Spindle', cost: 27000, hourlyYield: 820, icon: 'hammer' },
+            { id: 'g49', name: 'Molecular Sieve Heavy Element Isolation Mesh', cost: 35000, hourlyYield: 1100, icon: 'grid' },
+            { id: 'g50', name: 'Plasma Arc Deposition Shield Generator Hub', cost: 50000, hourlyYield: 1650, icon: 'shield' },
+            { id: 'g51', name: 'Quantum Scale Lithography Lens Array Mount', cost: 65000, hourlyYield: 2250, icon: 'eye' },
+            { id: 'g52', name: 'Macro-Asset Industrial Foundry Assembler Unit', cost: 85000, hourlyYield: 3100, icon: 'factory' }
         ];
 
         let appState = {
@@ -333,41 +443,37 @@
             autoCompound: false,
             demo: {
                 balance: 10000,
+                maxLiveAssets: 3,
                 myGoods: [
                     { ...GOODS_CATALOG[0], purchasedAt: Date.now() }
                 ]
             },
             real: {
                 balance: 0,
+                maxLiveAssets: 3,
                 myGoods: []
             },
+            idDocumentAttached: false,
             nextYieldTime: Date.now() + 3600000
         };
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            
-            const styles = {
+            const colors = {
                 success: 'bg-zinc-900 border border-zinc-800 text-white',
-                error: 'bg-zinc-900 border border-red-900/50 text-red-400',
+                error: 'bg-zinc-900 border border-red-950 text-red-400',
                 info: 'bg-zinc-900 border border-zinc-800 text-zinc-400'
             };
-
-            toast.className = `${styles[type]} p-4 rounded-xl shadow-xl text-xs font-semibold transform transition-all duration-300 translate-y-[-10px] opacity-0 flex items-center space-x-2.5`;
-            toast.innerHTML = `
-                <i data-lucide="${type === 'success' ? 'check-circle' : (type === 'error' ? 'alert-triangle' : 'info')}" class="w-4 h-4 text-[#05f3a2]"></i>
-                <span>${message}</span>
-            `;
-            
+            toast.className = `${colors[type]} p-3 rounded-xl shadow-xl text-[11px] font-semibold transform transition-all duration-200 translate-y-[-5px] opacity-0 flex items-center space-x-2`;
+            toast.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 text-[#00ff87]"></i><span>${message}</span>`;
             container.appendChild(toast);
             lucide.createIcons({ root: toast });
-
-            setTimeout(() => { toast.classList.remove('translate-y-[-10px]', 'opacity-0'); }, 10);
+            setTimeout(() => { toast.classList.remove('translate-y-[-5px]', 'opacity-0'); }, 10);
             setTimeout(() => {
                 toast.classList.add('opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+                setTimeout(() => toast.remove(), 200);
+            }, 3000);
         }
 
         function formatCurrency(amount) {
@@ -378,10 +484,8 @@
         function updateCurrencySymbol() {
             const currency = document.getElementById('auth-currency').value;
             appState.user.currency = currency;
-            
             const sym = CURRENCY_CONFIG[currency].symbol;
             document.querySelectorAll('.currency-symbol').forEach(el => el.innerText = sym);
-            
             document.getElementById('min-deposit-label').innerText = formatCurrency(CURRENCY_CONFIG['KES'].minDep);
             document.getElementById('min-withdraw-label').innerText = formatCurrency(CURRENCY_CONFIG['KES'].minWith);
         }
@@ -389,70 +493,73 @@
         function login() {
             const name = document.getElementById('auth-name').value.trim();
             const email = document.getElementById('auth-email').value.trim();
-            
-            if(!name || !email) return showToast('Valid initialization profiles require parameters.', 'error');
+            if(!name || !email) return showToast('All configuration credential inputs are required.', 'error');
             
             appState.user.name = name;
             appState.user.email = email;
             updateCurrencySymbol();
             
-            document.getElementById('user-greeting').innerText = `Active Account: ${name.split(' ')[0]}`;
+            document.getElementById('user-greeting').innerText = `Node: ${name.split(' ')[0]}`;
             document.getElementById('view-auth').style.display = 'none';
             
+            syncProfileWorkspace();
             renderMarket();
             updateDashboard();
-            showToast('Secure ledger instance running.', 'success');
-            
+            showToast('Framework instance synchronized seamlessly.', 'success');
             setInterval(updateCountdown, 1000);
         }
 
         function navTo(viewId) {
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
             document.getElementById(`view-${viewId}`).classList.add('active');
-
             const inactiveStyle = 'text-zinc-600 hover:text-zinc-400';
-            const activeStyle = 'text-[#05f3a2]';
-
-            ['dashboard', 'market', 'deposit', 'withdraw'].forEach(id => {
+            const activeStyle = 'text-[#00ff87]';
+            ['dashboard', 'market', 'profile', 'deposit', 'withdraw'].forEach(id => {
                 const btn = document.getElementById(`nav-${id}`);
-                btn.className = `flex flex-col items-center space-y-1 transition-colors ${id === viewId ? activeStyle : inactiveStyle}`;
+                if(btn) btn.className = `flex flex-col items-center space-y-1 transition-colors ${id === viewId ? activeStyle : inactiveStyle}`;
             });
-
             if(viewId === 'dashboard' || viewId === 'withdraw') updateDashboard();
+            if(viewId === 'profile') syncProfileWorkspace();
         }
 
         function switchEnv(env) {
             appState.env = env;
-            
             const btnDemo = document.getElementById('btn-demo');
             const btnReal = document.getElementById('btn-real');
-            
             if(env === 'demo') {
-                btnDemo.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-zinc-800 text-white transition-all";
-                btnReal.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all";
-                document.getElementById('env-badge').innerText = "Demo Ledger";
-                document.getElementById('env-badge').className = "text-[9px] font-bold px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-md uppercase tracking-wider";
+                btnDemo.className = "px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider bg-zinc-800 text-white transition-all";
+                btnReal.className = "px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all";
+                document.getElementById('env-badge').innerText = "Demo Instance";
             } else {
-                btnReal.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-[#e2b86d] text-black transition-all";
-                btnDemo.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all";
-                document.getElementById('env-badge').innerText = "Real Account Production";
-                document.getElementById('env-badge').className = "text-[9px] font-bold px-2 py-0.5 bg-zinc-900 border border-[#e2b86d]/30 text-[#e2b86d] rounded-md uppercase tracking-wider";
+                btnReal.className = "px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider bg-[#00ff87] text-black transition-all";
+                btnDemo.className = "px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all";
+                document.getElementById('env-badge').innerText = "Production Account";
             }
-            
             updateDashboard();
             renderMarket();
-            showToast(`Switched framework to ${env.toUpperCase()}`, 'info');
+            syncProfileWorkspace();
+            showToast(`Target context mapped to ${env.toUpperCase()}`, 'info');
         }
 
         function getActiveState() {
             return appState[appState.env];
         }
 
+        function syncProfileWorkspace() {
+            const state = getActiveState();
+            document.getElementById('prof-display-name').innerText = appState.user.name || 'Anonymous Node';
+            document.getElementById('prof-display-email').innerText = appState.user.email || 'unassigned@ledger.com';
+            document.getElementById('prof-currency').innerText = appState.user.currency;
+            document.getElementById('prof-slots').innerText = `Max ${state.maxLiveAssets} Active Slots`;
+            document.getElementById('prof-verification').innerText = appState.idDocumentAttached ? 'Identity Verified' : 'Identity Verification Required';
+            document.getElementById('prof-verification').className = appState.idDocumentAttached ? 'font-bold text-[#00ff87]' : 'font-bold text-[#f5af19]';
+            document.getElementById('prof-env').innerText = appState.env === 'real' ? 'LIVE_PRODUCTION_MAINNET' : 'SANDBOX_DEMO_LEVERAGE';
+        }
+
         function updateDashboard() {
             const state = getActiveState();
             let totalAssetValue = 0;
             let totalHourlyYield = 0;
-            
             state.myGoods.forEach(good => {
                 totalAssetValue += good.cost;
                 totalHourlyYield += good.hourlyYield;
@@ -463,17 +570,28 @@
             document.getElementById('display-hourly-yield').innerText = formatCurrency(totalHourlyYield);
             document.getElementById('avail-withdraw-balance').innerText = formatCurrency(state.balance);
 
+            // Update Capacity Bar Metric
+            const currentLiveCount = state.myGoods.length;
+            document.getElementById('active-slots-count').innerText = currentLiveCount;
+            document.getElementById('max-slots-count').innerText = state.maxLiveAssets;
+            const slotPercentage = Math.min((currentLiveCount / state.maxLiveAssets) * 100, 100);
+            document.getElementById('slots-progress-bar').style.width = `${slotPercentage}%`;
+
+            if(state.maxLiveAssets >= 4) {
+                document.getElementById('btn-upgrade-slots').innerText = "Max Capacity Unlocked";
+                document.getElementById('btn-upgrade-slots').disabled = true;
+                document.getElementById('btn-upgrade-slots').className = "px-3 py-1.5 rounded-lg bg-zinc-900 text-zinc-600 font-bold text-[9px] uppercase tracking-wider cursor-not-allowed";
+            } else {
+                document.getElementById('btn-upgrade-slots').innerText = "Expand to 4 Live (100 KES)";
+                document.getElementById('btn-upgrade-slots').disabled = false;
+                document.getElementById('btn-upgrade-slots').className = "px-3 py-1.5 rounded-lg bg-white text-black font-bold text-[9px] uppercase tracking-wider transition-all hover:bg-zinc-200";
+            }
+
             const list = document.getElementById('my-goods-list');
             list.innerHTML = '';
             
             if(state.myGoods.length === 0) {
-                list.innerHTML = `
-                    <div class="text-center p-8 border border-dashed border-zinc-800 rounded-2xl text-zinc-600">
-                        <i data-lucide="package" class="w-6 h-6 mx-auto mb-2 opacity-40"></i>
-                        <p class="text-[11px] font-medium">Vault contains no productive assets.</p>
-                        <button onclick="navTo('market')" class="mt-3 px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-lg text-[10px] font-bold uppercase tracking-wider">Access Catalog</button>
-                    </div>
-                `;
+                list.innerHTML = `<div class="text-center p-6 border border-dashed border-zinc-900 rounded-xl text-zinc-600 text-[11px]">No active operational allocation units. Access the Catalog framework.</div>`;
             } else {
                 const groupedGoods = {};
                 state.myGoods.forEach(g => {
@@ -483,22 +601,21 @@
 
                 Object.values(groupedGoods).forEach(item => {
                     const totalYieldForGroup = item.hourlyYield * item.count;
-                    const accentColor = item.color === 'mint' ? '#05f3a2' : '#e2b86d';
                     list.innerHTML += `
-                        <div class="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-900 rounded-xl">
-                            <div class="flex items-center space-x-3.5">
-                                <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center relative">
-                                    <i data-lucide="${item.icon}" class="w-4 h-4" style="color: ${accentColor}"></i>
-                                    ${item.count > 1 ? `<span class="absolute -top-1.5 -right-1.5 bg-white text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">${item.count}</span>` : ''}
+                        <div class="flex items-center justify-between p-3 bg-zinc-900/40 border border-zinc-900 rounded-xl">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center relative">
+                                    <i data-lucide="${item.icon}" class="w-3.5 h-3.5 text-[#00ff87]"></i>
+                                    ${item.count > 1 ? `<span class="absolute -top-1 -right-1 bg-white text-black text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">${item.count}</span>` : ''}
                                 </div>
                                 <div>
                                     <h4 class="text-xs font-bold text-white">${item.name}</h4>
-                                    <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-medium">Operational & Distributing</p>
+                                    <p class="text-[9px] text-zinc-500">Live Yield Running</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-xs font-bold text-white flex items-center justify-end"><span class="currency-symbol text-[10px] mr-0.5 text-zinc-500">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(totalYieldForGroup)}</span>
-                                <p class="text-[9px] text-zinc-500">/hr allocation</p>
+                                <span class="text-xs font-bold text-white flex items-center justify-end"><span class="currency-symbol text-[9px] mr-0.5 text-zinc-600">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(totalYieldForGroup)}</span>
+                                <p class="text-[8px] text-zinc-500">/hr</p>
                             </div>
                         </div>
                     `;
@@ -515,28 +632,25 @@
 
             GOODS_CATALOG.forEach(good => {
                 const canAfford = state.balance >= good.cost;
-                const accentColor = good.color === 'mint' ? '#05f3a2' : '#e2b86d';
-                
                 container.innerHTML += `
-                    <div class="p-5 bg-zinc-900/20 border border-zinc-900/80 rounded-2xl flex flex-col justify-between transition-all group">
+                    <div class="p-4 premium-card-ui rounded-xl flex flex-col justify-between transition-all group">
                         <div class="flex justify-between items-start w-full">
-                            <div class="flex items-center space-x-3.5">
-                                <div class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-                                    <i data-lucide="${good.icon}" class="w-5 h-5" style="color: ${accentColor}"></i>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-lg bg-zinc-950 border border-zinc-900 flex items-center justify-center">
+                                    <i data-lucide="${good.icon}" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-sm font-bold text-white group-hover:text-zinc-100 transition-colors">${good.name}</h3>
-                                    <p class="text-xs text-[#05f3a2] font-semibold mt-0.5">+<span class="currency-symbol">${CURRENCY_CONFIG[appState.user.currency].symbol}</span> ${formatCurrency(good.hourlyYield)}<span class="text-[10px] text-zinc-500 font-medium"> / hour</span></p>
+                                    <h3 class="text-xs font-bold text-white">${good.name}</h3>
+                                    <p class="text-[11px] text-[#00ff87] font-semibold mt-0.5">+<span class="currency-symbol">${CURRENCY_CONFIG[appState.user.currency].symbol}</span> ${formatCurrency(good.hourlyYield)}<span class="text-[9px] text-zinc-600 font-medium">/hr</span></p>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="flex items-center justify-between pt-4 mt-4 border-t border-zinc-900 w-full">
-                            <div class="text-base font-bold text-white font-display">
-                                <span class="currency-symbol text-xs text-zinc-500 mr-0.5">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(good.cost)}
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-zinc-900/60 w-full">
+                            <div class="text-sm font-bold text-white font-display">
+                                <span class="currency-symbol text-xs text-zinc-600 mr-0.5">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(good.cost)}
                             </div>
-                            <button onclick="buyGood('${good.id}')" class="px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${canAfford ? 'bg-white text-black hover:bg-zinc-200' : 'bg-zinc-900 border border-zinc-800 text-zinc-600 cursor-not-allowed'}">
-                                ${canAfford ? 'Acquire Asset' : 'Liquidity Deficit'}
+                            <button onclick="buyGood('${good.id}')" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${canAfford ? 'bg-white text-black hover:bg-zinc-200' : 'bg-zinc-900 text-zinc-600 border border-zinc-800 cursor-not-allowed'}">
+                                ${canAfford ? 'Acquire Unit' : 'Insufficient'}
                             </button>
                         </div>
                     </div>
@@ -549,36 +663,86 @@
             const good = GOODS_CATALOG.find(g => g.id === goodId);
             const state = getActiveState();
 
+            // Strict Validation Check for Active Slot Constraints Matrix
+            if (state.myGoods.length >= state.maxLiveAssets) {
+                showToast(`Live slot ceiling reached (${state.maxLiveAssets}). Upgrade architecture constraints configuration to run more live assets.`, 'error');
+                return;
+            }
+
             if (state.balance < good.cost) {
-                showToast(`Insufficient vault capacity. Please complete inflow configuration.`, 'error');
+                showToast(`Insufficient liquid vault configuration parameters. Run inflow execution.`, 'error');
                 if(appState.env === 'real') navTo('deposit');
                 return;
             }
 
             state.balance -= good.cost;
             state.myGoods.push({ ...good, purchasedAt: Date.now() });
-
             updateDashboard();
             renderMarket();
-            showToast(`Asset allocation optimized. ${good.name} online.`, 'success');
+            showToast(`Allocation optimized successfully. Active module running.`, 'success');
+        }
+
+        // Paid Expansion Logic for Live Constraint Limit (100 KES Gate)
+        function upgradeLiveCapacity() {
+            const state = getActiveState();
+            if (state.maxLiveAssets >= 4) {
+                showToast("Maximum operational structural limitation tier already fulfilled.", "info");
+                return;
+            }
+
+            if (appState.env === 'real') {
+                let handler = PaystackPop.setup({
+                    key: PAYSTACK_KEY,
+                    email: appState.user.email,
+                    amount: 10000, // Exactly 100 KES in subunits (cents)
+                    currency: appState.user.currency,
+                    ref: 'LI_SLOT_UPG_' + Math.floor((Math.random() * 1000000000) + 1),
+                    callback: function(response) {
+                        state.maxLiveAssets = 4;
+                        updateDashboard();
+                        syncProfileWorkspace();
+                        showToast("Infrastructure expansion complete: 4 live allocation slots active.", "success");
+                    },
+                    onClose: function() {
+                        showToast('Capacity upgrade configuration pipeline terminated.', 'info');
+                    }
+                });
+                handler.openIframe();
+            } else {
+                // Demo Mode handling
+                if (state.balance < 100) {
+                    showToast("Insufficient sandbox capacity limits for validation (Requires 100 Demo KES Equivalent).", "error");
+                    return;
+                }
+                state.balance -= 100;
+                state.maxLiveAssets = 4;
+                updateDashboard();
+                syncProfileWorkspace();
+                showToast("Demo environment capacity constraints updated to 4 live assets.", "success");
+            }
+        }
+
+        function handleIdFileSelect(input) {
+            if(input.files && input.files.length > 0) {
+                appState.idDocumentAttached = true;
+                document.getElementById('id-upload-label').innerText = `Attached: ${input.files[0].name.substring(0, 20)}...`;
+                document.getElementById('id-upload-label').className = "text-[10px] text-[#00ff87] font-semibold";
+                showToast("Identity verification object integrated into staging environment.", "info");
+                syncProfileWorkspace();
+            }
         }
 
         function updateCountdown() {
             const now = Date.now();
             let remainingMs = appState.nextYieldTime - now;
-
             if (remainingMs <= 0) {
                 processHourlyYield();
                 appState.nextYieldTime = now + 3600000;
                 remainingMs = 3600000;
             }
-
             const minutes = Math.floor(remainingMs / 60000);
             const seconds = Math.floor((remainingMs % 60000) / 1000);
-            
-            document.getElementById('countdown-timer').innerText = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
+            document.getElementById('countdown-timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             const percent = (remainingMs / 3600000) * 100;
             document.getElementById('countdown-progress').style.width = `${percent}%`;
         }
@@ -587,49 +751,45 @@
             ['demo', 'real'].forEach(env => {
                 const state = appState[env];
                 let earned = 0;
-                
                 state.myGoods.forEach(good => { earned += good.hourlyYield; });
-
                 if (earned > 0) {
                     state.balance += earned;
-                    
                     if (appState.env === env) {
-                        showToast(`Yield distribution settled: +${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(earned)}`, 'success');
+                        showToast(`Hourly yield cycle settled successfully: +${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(earned)}`, 'success');
                         
+                        // Auto-Compound Logic Execution Check
                         if (appState.autoCompound) {
                             const cheapest = GOODS_CATALOG[0];
-                            if (state.balance >= cheapest.cost) {
+                            if (state.balance >= cheapest.cost && state.myGoods.length < state.maxLiveAssets) {
                                 state.balance -= cheapest.cost;
                                 state.myGoods.push({ ...cheapest, purchasedAt: Date.now() });
-                                showToast(`Compounding: Automatically allocated ${cheapest.name}`, 'info');
+                                showToast(`Automation: Compounded yield into ${cheapest.name}`, 'info');
                             }
                         }
                     }
                 }
             });
-            
             updateDashboard();
             if(document.getElementById('view-market').classList.contains('active')) renderMarket();
         }
 
         document.getElementById('toggle-compound').addEventListener('change', (e) => {
             appState.autoCompound = e.target.checked;
-            showToast(`Automation system ${appState.autoCompound ? 'engaged' : 'offline'}`, 'info');
+            showToast(`Automation subsystem pipeline ${appState.autoCompound ? 'online' : 'deactivated'}`, 'info');
         });
 
         function processDeposit() {
             if (appState.env !== 'real') {
-                showToast('Switch framework environment to Production Mode to configure real capital.', 'error');
+                showToast('Switch framework layer environment context to Production Mode.', 'error');
                 return;
             }
-
             const inputVal = parseFloat(document.getElementById('input-deposit').value);
             const reqKES = CURRENCY_CONFIG['KES'].minDep;
             const localRate = CURRENCY_CONFIG[appState.user.currency].rate;
             const inputEquivalentKES = inputVal / localRate;
 
             if (!inputVal || inputEquivalentKES < reqKES) {
-                showToast(`Minimum required threshold is ${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(reqKES)}.`, 'error');
+                showToast(`Minimum capitalization allocation input size is KES ${reqKES}.`, 'error');
                 return;
             }
 
@@ -638,15 +798,15 @@
                 email: appState.user.email,
                 amount: Math.round(inputVal * 100),
                 currency: appState.user.currency,
-                ref: 'LI_INC_' + Math.floor((Math.random() * 1000000000) + 1),
+                ref: 'LI_DEPOSIT_MAIN_' + Math.floor((Math.random() * 1000000000) + 1),
                 callback: function(response) {
                     appState.real.balance += inputEquivalentKES;
                     document.getElementById('input-deposit').value = '';
-                    showToast('Inflow authorized successfully. Capital active.', 'success');
+                    showToast('Inflow verification authorized. Assets generated.', 'success');
                     navTo('dashboard');
                 },
                 onClose: function() {
-                    showToast('Inflow session aborted.', 'info');
+                    showToast('Inflow authorization channel dropped.', 'info');
                 }
             });
             handler.openIframe();
@@ -654,7 +814,13 @@
 
         function processWithdraw() {
             if (appState.env !== 'real') {
-                showToast('Switch framework environment to Production Mode to configure real liquidation.', 'error');
+                showToast('Switch framework layer environment context to Production Mode.', 'error');
+                return;
+            }
+
+            // Mandatory Identity Document Upload Strict Check
+            if (!appState.idDocumentAttached || document.getElementById('input-withdraw-id').files.length === 0) {
+                showToast('Liquidation rejected: Mandatory Identification Verification File Object is missing.', 'error');
                 return;
             }
 
@@ -667,28 +833,26 @@
             const inputEquivalentKES = inputVal / localRate;
 
             if (!inputVal || !dest) {
-                showToast('Liquidation parameters require numeric size and valid route registry.', 'error');
+                showToast('Liquidation criteria requires size constraints and destination target.', 'error');
                 return;
             }
 
             if (inputEquivalentKES < reqKES) {
-                showToast(`Minimum allowable settlement limit is ${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(reqKES)}.`, 'error');
+                showToast(`Minimum structural withdrawal limitation constraint is KES ${reqKES}.`, 'error');
                 return;
             }
 
             if (inputEquivalentKES > state.balance) {
-                showToast('Target quantity exceeds liquid capacity limits.', 'error');
+                showToast('Requested liquidation velocity exceeds current active liquid parameters.', 'error');
                 return;
             }
 
             state.balance -= inputEquivalentKES;
             document.getElementById('input-withdraw').value = '';
             document.getElementById('input-withdraw-dest').value = '';
-            
-            showToast('Liquidation initialized. Routing through clearing infrastructure.', 'success');
+            showToast('Liquidation initialized. Awaiting validation clearing confirmation loops.', 'success');
             navTo('dashboard');
         }
-        
     </script>
 </body>
 </html>
