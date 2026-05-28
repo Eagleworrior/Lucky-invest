@@ -429,7 +429,7 @@
             { id: 'g44', name: 'Pneumatic Actuator Heavy Manipulator Joint', cost: 8400, hourlyYield: 220, icon: 'anvil' },
             { id: 'g45', name: 'Graphene Layer Dispersion Coating Chamber', cost: 11000, hourlyYield: 300, icon: 'layers' },
             { id: 'g46', name: 'Cryogenic Structural Tempering Pressure Tank', cost: 15500, hourlyYield: 440, icon: 'cylinder' },
-            { id: 'g47', name: 'Induction Arc Smelter Power Regulation Module', cost: 20000, hourlyYield: 580, icon: 'coined' },
+            { id: 'g47', name: 'Induction Arc Smelter Power Regulation Module', cost: 20000, hourlyYield: 580, icon: 'coins' },
             { id: 'g48', name: 'High-Speed Precision Kinetic Milling Spindle', cost: 27000, hourlyYield: 820, icon: 'hammer' },
             { id: 'g49', name: 'Molecular Sieve Heavy Element Isolation Mesh', cost: 35000, hourlyYield: 1100, icon: 'grid' },
             { id: 'g50', name: 'Plasma Arc Deposition Shield Generator Hub', cost: 50000, hourlyYield: 1650, icon: 'shield' },
@@ -551,7 +551,7 @@
             document.getElementById('prof-display-email').innerText = appState.user.email || 'unassigned@ledger.com';
             document.getElementById('prof-currency').innerText = appState.user.currency;
             document.getElementById('prof-slots').innerText = `Max ${state.maxLiveAssets} Active Slots`;
-            document.getElementById('prof-verification').innerText = appState.idDocumentAttached ? 'Identity Verified' : 'Identity Verification Required';
+            document.getElementById('prof-verification').innerText = appState.idDocumentAttached ? 'Identity Verified' : 'Identity Pending';
             document.getElementById('prof-verification').className = appState.idDocumentAttached ? 'font-bold text-[#00ff87]' : 'font-bold text-[#f5af19]';
             document.getElementById('prof-env').innerText = appState.env === 'real' ? 'LIVE_PRODUCTION_MAINNET' : 'SANDBOX_DEMO_LEVERAGE';
         }
