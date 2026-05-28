@@ -3,288 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucky Invest - Premium Wealth Growth</title>
+    <title>Lucky Invest — Premium Asset Optimization</title>
     
-    <!-- Tailwind & Icons -->
+    <!-- Tailwind CSS & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
 
-    <!-- Clean, Professional Typography -->
+    <!-- Premium Typography & Fine-Tuned Theme Overrides -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
         
         :root {
-            --bg-dark: #070d19;
-            --card-bg: #111827;
-            --brand-green: #10b981;
-            --brand-gold: #fbbf24;
+            --bg-obsidian: #09090b;
+            --card-surface: #141417;
+            --card-border: rgba(255, 255, 255, 0.06);
+            --accent-mint: #05f3a2;
+            --accent-gold: #e2b86d;
         }
 
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-dark);
-            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-obsidian);
+            color: #f4f4f5;
             -webkit-tap-highlight-color: transparent;
+            letter-spacing: -0.01em;
         }
 
-        h1, h2, h3, h4, h5, .font-heading {
-            font-family: 'Outfit', sans-serif;
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Space Grotesk', sans-serif;
         }
 
-        /* Subtle Background Pattern for Premium Feel */
-        .bg-pattern {
-            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
-            background-size: 32px 32px;
+        /* Pure Premium Glassmorphism */
+        .premium-card {
+            background: rgba(20, 20, 23, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
         }
 
-        /* Glassmorphism Cards */
-        .glass-card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .premium-card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
-        /* Custom Toggle Switch for Auto-Invest */
+        /* Clean Toggle Switch */
         .toggle-checkbox:checked + .toggle-label {
-            background-color: var(--brand-green);
+            background-color: var(--accent-mint);
         }
         .toggle-checkbox:checked + .toggle-label .toggle-dot {
             transform: translateX(100%);
+            background-color: #09090b;
         }
 
-        /* Hide Scrollbar */
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Smooth View Transitions */
-        .app-view { display: none; animation: fadeIn 0.3s ease-out forwards; }
+        /* View Switcher Animations */
+        .app-view { display: none; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .app-view.active { display: block; }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Pulse Animation for Hourly Growth */
-        @keyframes subtlePulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-        .yield-pulse { animation: subtlePulse 2s infinite; }
+        /* Subtle glow effects for high-tier assets */
+        .glow-mint { shadow: 0 0 20px rgba(5, 243, 162, 0.15); }
+        .glow-gold { shadow: 0 0 20px rgba(226, 184, 109, 0.15); }
     </style>
 </head>
-<body class="min-h-screen bg-pattern relative pb-24 text-slate-100">
+<body class="min-h-screen relative pb-28 text-zinc-200 selection:bg-zinc-800 selection:text-white">
 
-    <!-- GLOBAL TOAST NOTIFICATIONS -->
-    <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-[200] flex flex-col space-y-2 pointer-events-none w-[90%] max-w-md"></div>
+    <!-- NOTIFICATION LAYER -->
+    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex flex-col space-y-3 pointer-events-none w-[92%] max-w-md"></div>
 
-    <!-- AUTHENTICATION / ONBOARDING SCREEN -->
-    <section id="view-auth" class="fixed inset-0 z-50 bg-[#070d19] flex items-center justify-center p-6">
-        <div class="w-full max-w-md p-8 rounded-3xl glass-card shadow-2xl relative overflow-hidden">
-            <!-- Decorative Glow -->
-            <div class="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl"></div>
-            
-            <div class="text-center space-y-3 mb-8 relative z-10">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg">
-                    <i data-lucide="leaf" class="w-8 h-8 text-white"></i>
+    <!-- ONBOARDING & ACCOUNT INITIALIZATION SCREEN -->
+    <section id="view-auth" class="fixed inset-0 z-50 bg-[#09090b] flex items-center justify-center p-6">
+        <div class="w-full max-w-sm p-8 rounded-3xl premium-card shadow-2xl relative">
+            <div class="text-center space-y-2 mb-8">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shadow-inner">
+                    <i data-lucide="layers" class="w-7 h-7 text-[#05f3a2]"></i>
                 </div>
-                <h1 class="text-3xl font-heading font-bold text-white tracking-tight">Lucky Invest</h1>
-                <p class="text-sm text-slate-400">Buy Assets. Watch Wealth Grow Hourly.</p>
+                <h1 class="text-2xl font-display font-bold text-white tracking-tight">Lucky Invest</h1>
+                <p class="text-xs text-zinc-400">Acquire yield-bearing assets. Monitor hourly distribution.</p>
             </div>
 
-            <div class="space-y-4 relative z-10">
+            <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Account Alias</label>
-                    <input type="text" id="auth-name" class="w-full mt-1 p-4 bg-slate-900/80 border border-slate-700 rounded-xl text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all" placeholder="Enter full name" />
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Profile Name</label>
+                    <input type="text" id="auth-name" class="w-full mt-1.5 p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-medium focus:border-zinc-500 outline-none transition-all placeholder:text-zinc-600 text-sm" placeholder="Enter full name" />
                 </div>
                 
                 <div>
-                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Email Address</label>
-                    <input type="email" id="auth-email" class="w-full mt-1 p-4 bg-slate-900/80 border border-slate-700 rounded-xl text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all" placeholder="investor@mail.com" />
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Email Address</label>
+                    <input type="email" id="auth-email" class="w-full mt-1.5 p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-medium focus:border-zinc-500 outline-none transition-all placeholder:text-zinc-600 text-sm" placeholder="investor@domain.com" />
                 </div>
 
                 <div>
-                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Primary Currency</label>
-                    <select id="auth-currency" onchange="updateCurrencySymbol()" class="w-full mt-1 p-4 bg-slate-900/80 border border-slate-700 rounded-xl text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none appearance-none">
-                        <option value="KES">KES - Kenyan Shilling</option>
-                        <option value="NGN">NGN - Nigerian Naira</option>
-                        <option value="USD">USD - US Dollar</option>
-                    </select>
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider ml-1">Regional Currency Configuration</label>
+                    <div class="relative mt-1.5">
+                        <select id="auth-currency" onchange="updateCurrencySymbol()" class="w-full p-4 bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-medium focus:border-zinc-500 outline-none appearance-none text-sm cursor-pointer">
+                            <option value="KES">KES — Kenyan Shilling</option>
+                            <option value="NGN">NGN — Nigerian Naira</option>
+                            <option value="USD">USD — US Dollar</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
                 </div>
 
-                <button onclick="login()" class="w-full mt-4 py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold text-sm uppercase tracking-wider transition-all shadow-[0_4px_14px_0_rgba(16,185,129,0.39)]">
-                    Access Platform
+                <button onclick="login()" class="w-full mt-4 py-4 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all shadow-md">
+                    Initialize Workspace
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- MAIN APP HEADER -->
-    <header class="sticky top-0 z-40 glass-card border-b border-white/5 px-5 py-4 flex items-center justify-between">
+    <!-- PREMIUM COMPACT HEADER -->
+    <header class="sticky top-0 z-40 bg-[#09090b]/80 backdrop-blur-md border-b border-zinc-900 px-6 py-4 flex items-center justify-between max-w-md mx-auto">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-                <i data-lucide="leaf" class="w-6 h-6 text-white"></i>
+            <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                <i data-lucide="layers" class="w-5 h-5 text-[#05f3a2]"></i>
             </div>
             <div>
-                <h2 class="text-xl font-heading font-bold text-white leading-tight">Lucky Invest</h2>
-                <p class="text-[10px] font-medium text-emerald-400 tracking-wider uppercase" id="user-greeting">Welcome</p>
+                <h2 class="text-base font-display font-bold text-white tracking-tight">Lucky Invest</h2>
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest" id="user-greeting">System Idle</p>
             </div>
         </div>
         
-        <!-- Environment Toggle -->
-        <div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
-            <button onclick="switchEnv('demo')" id="btn-demo" class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-white transition-all shadow-sm">Demo</button>
-            <button onclick="switchEnv('real')" id="btn-real" class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-all">Real</button>
+        <!-- Modern Environment Toggles -->
+        <div class="flex bg-zinc-900/80 p-0.5 rounded-xl border border-zinc-800/80">
+            <button onclick="switchEnv('demo')" id="btn-demo" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-zinc-800 text-white transition-all">Demo</button>
+            <button onclick="switchEnv('real')" id="btn-real" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all">Real</button>
         </div>
     </header>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="max-w-md mx-auto p-4 space-y-6">
+    <!-- STRUCTURAL MAIN ELEMENT -->
+    <main class="max-w-md mx-auto p-5 space-y-6">
 
-        <!-- DASHBOARD VIEW (My Wealth & Hourly Growth) -->
+        <!-- DASHBOARD HUB -->
         <section id="view-dashboard" class="app-view active space-y-6">
             
-            <!-- Hero Balance Card -->
-            <div class="p-6 rounded-3xl bg-gradient-to-br from-emerald-900/40 via-slate-900 to-slate-900 border border-emerald-500/20 relative overflow-hidden shadow-xl">
-                <!-- Visual Background Flare -->
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-                
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Liquid Balance</span>
-                    <span id="env-badge" class="text-[9px] font-bold px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20 uppercase tracking-widest">Demo Mode</span>
+            <!-- Minimalist Premium Metric Display -->
+            <div class="p-6 rounded-3xl bg-zinc-900/40 border border-zinc-800 relative overflow-hidden">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Liquid Asset Vault</span>
+                    <span id="env-badge" class="text-[9px] font-bold px-2 py-0.5 bg-zinc-800 border border-zinc-700 text-zinc-400 rounded-md uppercase tracking-wider">Demo Ledger</span>
                 </div>
                 
-                <h1 class="text-4xl font-heading font-bold text-white tracking-tight mb-6">
-                    <span class="currency-symbol">KES</span> <span id="display-balance">10,000.00</span>
+                <h1 class="text-3xl font-display font-bold text-white tracking-tight mb-6">
+                    <span class="currency-symbol text-zinc-500 font-sans text-xl mr-1">KES</span><span id="display-balance" class="text-zinc-50">10,000.00</span>
                 </h1>
 
-                <div class="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-black/40 border border-white/5">
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-800/60">
                     <div>
-                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">Total Assets Value</span>
-                        <div class="text-sm font-bold text-slate-200">
-                            <span class="currency-symbol">KES</span> <span id="display-assets-value">0.00</span>
+                        <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Asset Allocation</span>
+                        <div class="text-sm font-semibold text-zinc-200">
+                            <span class="currency-symbol text-zinc-500 text-xs mr-0.5">KES</span><span id="display-assets-value">0.00</span>
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">Hourly Earnings</span>
-                        <div class="text-sm font-bold text-emerald-400 flex items-center justify-end">
-                            +<span class="currency-symbol text-emerald-400 text-[10px] mr-1">KES</span> <span id="display-hourly-yield">0.00</span>
+                        <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Combined Yield</span>
+                        <div class="text-sm font-bold text-[#05f3a2] flex items-center justify-end">
+                            +<span class="currency-symbol text-[11px] mr-0.5">KES</span><span id="display-hourly-yield">0.00</span><span class="text-[9px] text-zinc-500 font-medium ml-1">/hr</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Auto-Invest / Compound Switch -->
-            <div class="p-4 rounded-2xl glass-card flex items-center justify-between">
+            <!-- Optimization Switch -->
+            <div class="p-4 rounded-2xl bg-zinc-900/20 border border-zinc-900 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
-                        <i data-lucide="refresh-cw" class="w-5 h-5 text-brand-gold"></i>
+                    <div class="w-9 h-9 rounded-xl bg-zinc-900/60 flex items-center justify-center border border-zinc-800/60">
+                        <i data-lucide="git-merge" class="w-4 h-4 text-[#e2b86d]"></i>
                     </div>
                     <div>
-                        <h3 class="text-sm font-heading font-bold text-white">Auto-Compound</h3>
-                        <p class="text-[10px] text-slate-400">Reinvest hourly earnings automatically</p>
+                        <h3 class="text-xs font-bold text-white">Automate Compounding</h3>
+                        <p class="text-[10px] text-zinc-500">Instantly convert liquid distribution into assets</p>
                     </div>
                 </div>
-                <div class="relative inline-block w-12 align-middle select-none">
+                <div class="relative inline-block w-10 align-middle select-none">
                     <input type="checkbox" id="toggle-compound" class="toggle-checkbox hidden"/>
-                    <label for="toggle-compound" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-700 cursor-pointer transition-colors duration-300">
-                        <span class="toggle-dot block w-4 h-4 rounded-full bg-white shadow m-1 transform transition-transform duration-300"></span>
+                    <label for="toggle-compound" class="toggle-label block overflow-hidden h-5 rounded-full bg-zinc-800 cursor-pointer transition-colors duration-200">
+                        <span class="toggle-dot block w-3 h-3 rounded-full bg-zinc-500 m-1 transform transition-transform duration-200"></span>
                     </label>
                 </div>
             </div>
 
-            <!-- Hourly Countdown Timer Widget -->
-            <div class="p-5 rounded-2xl bg-emerald-950/30 border border-emerald-500/20 text-center yield-pulse">
-                <p class="text-xs font-semibold text-emerald-500 uppercase tracking-widest mb-2">Next Earnings Distribution In</p>
-                <h2 id="countdown-timer" class="text-3xl font-heading font-bold text-white tracking-widest font-mono">59:59</h2>
-                <div class="w-full bg-slate-800 rounded-full h-1.5 mt-4 overflow-hidden">
-                    <div id="countdown-progress" class="bg-emerald-500 h-1.5 rounded-full" style="width: 100%"></div>
+            <!-- Hourly Countdown Metric -->
+            <div class="p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800 text-center">
+                <div class="flex items-center justify-between text-left">
+                    <div>
+                        <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Next Distribution Cycle</p>
+                        <h2 id="countdown-timer" class="text-xl font-display font-bold text-white tracking-wider font-mono mt-0.5">59:59</h2>
+                    </div>
+                    <div class="w-24 bg-zinc-900 border border-zinc-800 rounded-full h-2 overflow-hidden relative">
+                        <div id="countdown-progress" class="bg-[#05f3a2] h-full transition-all duration-1000" style="width: 100%"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- My Purchased Goods -->
-            <div>
-                <h3 class="text-sm font-heading font-bold text-slate-200 mb-3 flex items-center">
-                    <i data-lucide="package-check" class="w-4 h-4 mr-2 text-slate-400"></i> My Active Goods
+            <!-- Active Assets Ledger -->
+            <div class="space-y-3">
+                <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center">
+                    <i data-lucide="box" class="w-3.5 h-3.5 mr-1.5 text-zinc-600"></i> Allocated Holdings
                 </h3>
-                <div id="my-goods-list" class="space-y-3">
-                    <!-- Populated by JS -->
+                <div id="my-goods-list" class="space-y-2.5">
+                    <!-- Loaded dynamically via JS -->
                 </div>
             </div>
         </section>
 
-        <!-- MARKET / SHOP VIEW (Buy Goods) -->
-        <section id="view-market" class="app-view space-y-6">
-            <div class="text-center space-y-1 mb-6">
-                <h2 class="text-2xl font-heading font-bold text-white">Asset Market</h2>
-                <p class="text-xs text-slate-400">Purchase goods to increase your hourly yield.</p>
+        <!-- MARKET / PRE-ORDER MARKETPLACE -->
+        <section id="view-market" class="app-view space-y-5">
+            <div class="space-y-1">
+                <h2 class="text-xl font-display font-bold text-white">Asset Acquisition</h2>
+                <p class="text-xs text-zinc-400">Deploy capital into high-yield infrastructural and digital operations.</p>
             </div>
 
-            <div id="market-goods-container" class="grid grid-cols-1 gap-4">
-                <!-- Goods dynamically injected here -->
+            <div id="market-goods-container" class="grid grid-cols-1 gap-3.5">
+                <!-- Assets injected dynamically via JS -->
             </div>
         </section>
 
-        <!-- DEPOSIT VIEW -->
+        <!-- CAPITAL INFLOW (DEPOSIT) -->
         <section id="view-deposit" class="app-view space-y-6">
-            <div class="p-6 rounded-3xl glass-card space-y-6">
-                <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 flex items-center justify-center mb-2">
-                    <i data-lucide="arrow-down-to-line" class="w-8 h-8 text-emerald-500"></i>
-                </div>
-                <h2 class="text-xl font-heading font-bold text-white text-center">Fund Account</h2>
-                
-                <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-center">
-                    <p class="text-[11px] text-slate-300">Minimum Deposit: <span class="font-bold text-white"><span class="currency-symbol">KES</span> <span id="min-deposit-label">500</span></span></p>
+            <div class="p-6 rounded-3xl bg-zinc-900/30 border border-zinc-800 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-[#05f3a2]"></i>
+                    </div>
+                    <h2 class="text-lg font-display font-bold text-white">Inflow Portal</h2>
+                    <p class="text-[11px] text-zinc-400">Minimum structural capitalization requirement: <span class="text-white font-semibold"><span class="currency-symbol">KES</span> <span id="min-deposit-label">500</span></span></p>
                 </div>
 
                 <div class="space-y-4">
                     <div>
-                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Amount to Deposit</label>
-                        <div class="relative mt-1">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-bold text-slate-500 currency-symbol">KES</span>
-                            <input type="number" id="input-deposit" placeholder="0.00" class="w-full p-4 pl-16 bg-slate-900 border border-slate-700 rounded-xl text-xl font-heading font-bold text-white focus:border-emerald-500 outline-none transition-all" />
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Capital Allocation Size</label>
+                        <div class="relative mt-1.5">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-zinc-600 currency-symbol">KES</span>
+                            <input type="number" id="input-deposit" placeholder="0.00" class="w-full p-4 pl-14 bg-zinc-900 border border-zinc-800 rounded-xl text-lg font-display font-bold text-white focus:border-zinc-600 outline-none transition-all placeholder:text-zinc-800" />
                         </div>
                     </div>
 
-                    <button onclick="processDeposit()" class="w-full py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold text-sm uppercase tracking-wider transition-all shadow-[0_4px_14px_0_rgba(16,185,129,0.39)]">
-                        Proceed to Payment
+                    <button onclick="processDeposit()" class="w-full py-4 rounded-xl bg-[#05f3a2] text-black font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all">
+                        Execute External Capital Inflow
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- WITHDRAW VIEW -->
+        <!-- CAPITAL OUTFLOW (WITHDRAWAL) -->
         <section id="view-withdraw" class="app-view space-y-6">
-            <div class="p-6 rounded-3xl glass-card space-y-6">
-                <div class="w-16 h-16 mx-auto rounded-full bg-slate-800 flex items-center justify-center mb-2">
-                    <i data-lucide="send" class="w-8 h-8 text-white"></i>
-                </div>
-                <h2 class="text-xl font-heading font-bold text-white text-center">Withdraw Earnings</h2>
-                
-                <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
-                    <p class="text-[11px] text-amber-400 font-medium">Minimum Withdrawal: <span class="font-bold"><span class="currency-symbol">KES</span> <span id="min-withdraw-label">30,000</span></span></p>
+            <div class="p-6 rounded-3xl bg-zinc-900/30 border border-zinc-800 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                        <i data-lucide="external-link" class="w-5 h-5 text-[#e2b86d]"></i>
+                    </div>
+                    <h2 class="text-lg font-display font-bold text-white">Liquidation Chamber</h2>
+                    <p class="text-[11px] text-zinc-400">Minimum standard payout constraint: <span class="text-white font-semibold"><span class="currency-symbol">KES</span> <span id="min-withdraw-label">30,000</span></span></p>
                 </div>
 
                 <div class="space-y-4">
                     <div>
-                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Withdrawal Amount</label>
-                        <div class="relative mt-1">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-bold text-slate-500 currency-symbol">KES</span>
-                            <input type="number" id="input-withdraw" placeholder="0.00" class="w-full p-4 pl-16 bg-slate-900 border border-slate-700 rounded-xl text-xl font-heading font-bold text-white focus:border-amber-500 outline-none transition-all" />
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Liquidation Quantity</label>
+                        <div class="relative mt-1.5">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-zinc-600 currency-symbol">KES</span>
+                            <input type="number" id="input-withdraw" placeholder="0.00" class="w-full p-4 pl-14 bg-zinc-900 border border-zinc-800 rounded-xl text-lg font-display font-bold text-white focus:border-zinc-600 outline-none transition-all placeholder:text-zinc-800" />
                         </div>
-                        <p class="text-[10px] text-slate-500 mt-2 ml-1">Available: <span class="currency-symbol">KES</span> <span id="avail-withdraw-balance">0.00</span></p>
+                        <p class="text-[10px] text-zinc-500 mt-2 ml-1">Liquid Capacity Available: <span class="currency-symbol">KES</span> <span id="avail-withdraw-balance">0.00</span></p>
                     </div>
 
                     <div>
-                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Destination Details</label>
-                        <input type="text" id="input-withdraw-dest" placeholder="Mobile Number or Bank Account" class="w-full mt-1 p-4 bg-slate-900 border border-slate-700 rounded-xl text-sm font-medium text-white focus:border-amber-500 outline-none transition-all" />
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Destination Target Registry</label>
+                        <input type="text" id="input-withdraw-dest" placeholder="Mobile Ledger Number / Account ID" class="w-full mt-1.5 p-4 bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-medium text-white focus:border-zinc-600 outline-none transition-all placeholder:text-zinc-700" />
                     </div>
 
-                    <button onclick="processWithdraw()" class="w-full py-4 rounded-xl bg-white hover:bg-slate-200 text-slate-900 font-bold text-sm uppercase tracking-wider transition-all">
-                        Request Withdrawal
+                    <button onclick="processWithdraw()" class="w-full py-4 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all">
+                        Authorize Asset Liquidation
                     </button>
                 </div>
             </div>
@@ -292,94 +284,90 @@
 
     </main>
 
-    <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 glass-card border-t border-white/5 pb-safe">
-        <div class="max-w-md mx-auto grid grid-cols-4 px-2 py-3">
-            <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex flex-col items-center space-y-1 text-emerald-400">
-                <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Home</span>
+    <!-- MINIMAL SEAMLESS NAV BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#09090b]/90 backdrop-blur-md border-t border-zinc-900 pb-safe">
+        <div class="max-w-md mx-auto grid grid-cols-4 px-3 py-3">
+            <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex flex-col items-center space-y-1 text-[#05f3a2]">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Vault</span>
             </button>
-            <button onclick="navTo('market')" id="nav-market" class="flex flex-col items-center space-y-1 text-slate-500 hover:text-slate-300 transition-colors">
-                <i data-lucide="shopping-bag" class="w-6 h-6"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Goods</span>
+            <button onclick="navTo('market')" id="nav-market" class="flex flex-col items-center space-y-1 text-zinc-600 hover:text-zinc-400 transition-colors">
+                <i data-lucide="plus-square" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Acquire</span>
             </button>
-            <button onclick="navTo('deposit')" id="nav-deposit" class="flex flex-col items-center space-y-1 text-slate-500 hover:text-slate-300 transition-colors">
-                <i data-lucide="wallet" class="w-6 h-6"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Deposit</span>
+            <button onclick="navTo('deposit')" id="nav-deposit" class="flex flex-col items-center space-y-1 text-zinc-600 hover:text-zinc-400 transition-colors">
+                <i data-lucide="arrow-down-left" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Inflow</span>
             </button>
-            <button onclick="navTo('withdraw')" id="nav-withdraw" class="flex flex-col items-center space-y-1 text-slate-500 hover:text-slate-300 transition-colors">
-                <i data-lucide="arrow-up-right-square" class="w-6 h-6"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Withdraw</span>
+            <button onclick="navTo('withdraw')" id="nav-withdraw" class="flex flex-col items-center space-y-1 text-zinc-600 hover:text-zinc-400 transition-colors">
+                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Payout</span>
             </button>
         </div>
     </nav>
 
-    <!-- APPLICATION LOGIC ENGINE -->
+    <!-- RE-ENGINEERED APPLICATION ARCHITECTURE -->
     <script>
-        // Initialize Icons
+        // Initialization
         lucide.createIcons();
 
-        // Constants & Configuration
-        const PAYSTACK_KEY = 'pk_live_ebbc4bdc1da0f8fc075bae6ce78da4f9c89552bc'; // As provided previously
+        const PAYSTACK_KEY = 'pk_live_ebbc4bdc1da0f8fc075bae6ce78da4f9c89552bc';
 
-        // Currencies and their rules (Base is conceptually handled as KES internally for simplicity of this demo)
         const CURRENCY_CONFIG = {
             KES: { symbol: 'KES', minDep: 500, minWith: 30000, rate: 1 },
             NGN: { symbol: '₦', minDep: 5500, minWith: 330000, rate: 11 },
             USD: { symbol: '$', minDep: 5, minWith: 250, rate: 0.0075 }
         };
 
-        // Available Goods / Investment Packages
+        // Upgraded Physical, Infrastructure, and Operational High-Yield Assets
         const GOODS_CATALOG = [
-            { id: 'g1', name: 'Starter Agri-Seed', icon: 'sprout', cost: 1000, hourlyYield: 20, color: 'emerald' },
-            { id: 'g2', name: 'Tech Node Franchise', icon: 'server', cost: 5000, hourlyYield: 110, color: 'blue' },
-            { id: 'g3', name: 'Commercial Real Estate Share', icon: 'building-2', cost: 15000, hourlyYield: 350, color: 'amber' },
-            { id: 'g4', name: 'Vanguard Enterprise', icon: 'gem', cost: 50000, hourlyYield: 1250, color: 'purple' }
+            { id: 'g1', name: 'Automated Logistics Drone Unit', icon: 'send', cost: 1200, hourlyYield: 25, color: 'mint' },
+            { id: 'g2', name: 'Solar Micro-Grid Infrastructure Block', icon: 'sun', cost: 6000, hourlyYield: 135, color: 'gold' },
+            { id: 'g3', name: 'Fulfillment Hub Robotic Conveyor', icon: 'cpu', cost: 18000, hourlyYield: 420, color: 'mint' },
+            { id: 'g4', name: 'Autonomous EV Long-Haul Fleet Share', icon: 'truck', cost: 55000, hourlyYield: 1400, color: 'gold' }
         ];
 
-        // State Management
         let appState = {
             user: { name: '', email: '', currency: 'KES' },
-            env: 'demo', // 'demo' or 'real'
+            env: 'demo', 
             autoCompound: false,
             demo: {
                 balance: 10000,
                 myGoods: [
-                    { ...GOODS_CATALOG[0], purchasedAt: Date.now() } // Starts with one basic good in demo
+                    { ...GOODS_CATALOG[0], purchasedAt: Date.now() }
                 ]
             },
             real: {
                 balance: 0,
                 myGoods: []
             },
-            nextYieldTime: Date.now() + 3600000 // 1 hour from now
+            nextYieldTime: Date.now() + 3600000
         };
 
-        // UI Helpers
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            const colors = {
-                success: 'bg-emerald-500 text-slate-900',
-                error: 'bg-rose-500 text-white',
-                info: 'bg-blue-500 text-white'
+            const styles = {
+                success: 'bg-zinc-900 border border-zinc-800 text-white',
+                error: 'bg-zinc-900 border border-red-900/50 text-red-400',
+                info: 'bg-zinc-900 border border-zinc-800 text-zinc-400'
             };
 
-            toast.className = `${colors[type]} p-4 rounded-xl shadow-lg font-bold text-sm transform transition-all duration-300 translate-y-[-20px] opacity-0 flex items-center space-x-2`;
+            toast.className = `${styles[type]} p-4 rounded-xl shadow-xl text-xs font-semibold transform transition-all duration-300 translate-y-[-10px] opacity-0 flex items-center space-x-2.5`;
             toast.innerHTML = `
-                <i data-lucide="${type === 'success' ? 'check-circle' : (type === 'error' ? 'alert-circle' : 'info')}" class="w-5 h-5"></i>
+                <i data-lucide="${type === 'success' ? 'check-circle' : (type === 'error' ? 'alert-triangle' : 'info')}" class="w-4 h-4 text-[#05f3a2]"></i>
                 <span>${message}</span>
             `;
             
             container.appendChild(toast);
             lucide.createIcons({ root: toast });
 
-            setTimeout(() => { toast.classList.remove('translate-y-[-20px]', 'opacity-0'); }, 10);
+            setTimeout(() => { toast.classList.remove('translate-y-[-10px]', 'opacity-0'); }, 10);
             setTimeout(() => {
                 toast.classList.add('opacity-0');
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 3500);
         }
 
         function formatCurrency(amount) {
@@ -387,7 +375,6 @@
             return (amount * rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        // Initialization & Auth
         function updateCurrencySymbol() {
             const currency = document.getElementById('auth-currency').value;
             appState.user.currency = currency;
@@ -403,39 +390,35 @@
             const name = document.getElementById('auth-name').value.trim();
             const email = document.getElementById('auth-email').value.trim();
             
-            if(!name || !email) return showToast('Please enter your details to proceed.', 'error');
+            if(!name || !email) return showToast('Valid initialization profiles require parameters.', 'error');
             
             appState.user.name = name;
             appState.user.email = email;
             updateCurrencySymbol();
             
-            document.getElementById('user-greeting').innerText = `Hello, ${name.split(' ')[0]}`;
+            document.getElementById('user-greeting').innerText = `Active Account: ${name.split(' ')[0]}`;
             document.getElementById('view-auth').style.display = 'none';
             
             renderMarket();
             updateDashboard();
-            showToast('Welcome to Lucky Invest', 'success');
+            showToast('Secure ledger instance running.', 'success');
             
-            // Start Timers
             setInterval(updateCountdown, 1000);
         }
 
-        // Navigation & Environment
         function navTo(viewId) {
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
             document.getElementById(`view-${viewId}`).classList.add('active');
 
-            const navColors = 'text-slate-500 hover:text-slate-300';
-            const activeColor = 'text-emerald-400';
+            const inactiveStyle = 'text-zinc-600 hover:text-zinc-400';
+            const activeStyle = 'text-[#05f3a2]';
 
             ['dashboard', 'market', 'deposit', 'withdraw'].forEach(id => {
                 const btn = document.getElementById(`nav-${id}`);
-                btn.className = `flex flex-col items-center space-y-1 transition-colors ${id === viewId ? activeColor : navColors}`;
+                btn.className = `flex flex-col items-center space-y-1 transition-colors ${id === viewId ? activeStyle : inactiveStyle}`;
             });
 
-            if(viewId === 'dashboard' || viewId === 'withdraw') {
-                updateDashboard();
-            }
+            if(viewId === 'dashboard' || viewId === 'withdraw') updateDashboard();
         }
 
         function switchEnv(env) {
@@ -445,31 +428,28 @@
             const btnReal = document.getElementById('btn-real');
             
             if(env === 'demo') {
-                btnDemo.className = "px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-white transition-all shadow-sm";
-                btnReal.className = "px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-all";
-                document.getElementById('env-badge').innerText = "Demo Mode";
-                document.getElementById('env-badge').className = "text-[9px] font-bold px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20 uppercase tracking-widest";
+                btnDemo.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-zinc-800 text-white transition-all";
+                btnReal.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all";
+                document.getElementById('env-badge').innerText = "Demo Ledger";
+                document.getElementById('env-badge').className = "text-[9px] font-bold px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-md uppercase tracking-wider";
             } else {
-                btnReal.className = "px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-brand-gold text-slate-900 transition-all shadow-sm";
-                btnDemo.className = "px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-all";
-                document.getElementById('env-badge').innerText = "Real Account";
-                document.getElementById('env-badge').className = "text-[9px] font-bold px-2 py-1 bg-brand-gold/10 text-brand-gold rounded-md border border-brand-gold/20 uppercase tracking-widest";
+                btnReal.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-[#e2b86d] text-black transition-all";
+                btnDemo.className = "px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500 hover:text-white transition-all";
+                document.getElementById('env-badge').innerText = "Real Account Production";
+                document.getElementById('env-badge').className = "text-[9px] font-bold px-2 py-0.5 bg-zinc-900 border border-[#e2b86d]/30 text-[#e2b86d] rounded-md uppercase tracking-wider";
             }
             
             updateDashboard();
             renderMarket();
-            showToast(`Switched to ${env.toUpperCase()} Environment`, 'info');
+            showToast(`Switched framework to ${env.toUpperCase()}`, 'info');
         }
 
-        // Core Rendering Functions
         function getActiveState() {
             return appState[appState.env];
         }
 
         function updateDashboard() {
             const state = getActiveState();
-            
-            // Calculate Totals
             let totalAssetValue = 0;
             let totalHourlyYield = 0;
             
@@ -483,20 +463,18 @@
             document.getElementById('display-hourly-yield').innerText = formatCurrency(totalHourlyYield);
             document.getElementById('avail-withdraw-balance').innerText = formatCurrency(state.balance);
 
-            // Render My Goods List
             const list = document.getElementById('my-goods-list');
             list.innerHTML = '';
             
             if(state.myGoods.length === 0) {
                 list.innerHTML = `
-                    <div class="text-center p-6 border border-dashed border-slate-700 rounded-2xl text-slate-500">
-                        <i data-lucide="shopping-cart" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-                        <p class="text-xs">No active assets. Visit the Market to start growing wealth.</p>
-                        <button onclick="navTo('market')" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold">Go to Market</button>
+                    <div class="text-center p-8 border border-dashed border-zinc-800 rounded-2xl text-zinc-600">
+                        <i data-lucide="package" class="w-6 h-6 mx-auto mb-2 opacity-40"></i>
+                        <p class="text-[11px] font-medium">Vault contains no productive assets.</p>
+                        <button onclick="navTo('market')" class="mt-3 px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-lg text-[10px] font-bold uppercase tracking-wider">Access Catalog</button>
                     </div>
                 `;
             } else {
-                // Group identical items to keep list clean
                 const groupedGoods = {};
                 state.myGoods.forEach(g => {
                     if(!groupedGoods[g.id]) groupedGoods[g.id] = { ...g, count: 0 };
@@ -505,63 +483,60 @@
 
                 Object.values(groupedGoods).forEach(item => {
                     const totalYieldForGroup = item.hourlyYield * item.count;
+                    const accentColor = item.color === 'mint' ? '#05f3a2' : '#e2b86d';
                     list.innerHTML += `
-                        <div class="flex items-center justify-between p-4 glass-card rounded-2xl">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center relative">
-                                    <i data-lucide="${item.icon}" class="w-5 h-5 text-${item.color}-400"></i>
-                                    ${item.count > 1 ? `<span class="absolute -top-1 -right-1 bg-white text-slate-900 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">${item.count}</span>` : ''}
+                        <div class="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-900 rounded-xl">
+                            <div class="flex items-center space-x-3.5">
+                                <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center relative">
+                                    <i data-lucide="${item.icon}" class="w-4 h-4" style="color: ${accentColor}"></i>
+                                    ${item.count > 1 ? `<span class="absolute -top-1.5 -right-1.5 bg-white text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">${item.count}</span>` : ''}
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-white">${item.name}</h4>
-                                    <p class="text-[10px] text-emerald-400 font-medium">Generating Yield Live</p>
+                                    <h4 class="text-xs font-bold text-white">${item.name}</h4>
+                                    <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-medium">Operational & Distributing</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-sm font-bold text-white flex items-center"><span class="currency-symbol text-[10px] mr-1 text-slate-400">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(totalYieldForGroup)}</span>
-                                <p class="text-[10px] text-slate-400">/ hour</p>
+                                <span class="text-xs font-bold text-white flex items-center justify-end"><span class="currency-symbol text-[10px] mr-0.5 text-zinc-500">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(totalYieldForGroup)}</span>
+                                <p class="text-[9px] text-zinc-500">/hr allocation</p>
                             </div>
                         </div>
                     `;
                 });
             }
             lucide.createIcons();
-            
-            // Sync Compound Toggle
             document.getElementById('toggle-compound').checked = appState.autoCompound;
         }
 
         function renderMarket() {
             const container = document.getElementById('market-goods-container');
             container.innerHTML = '';
-            
             const state = getActiveState();
 
             GOODS_CATALOG.forEach(good => {
                 const canAfford = state.balance >= good.cost;
+                const accentColor = good.color === 'mint' ? '#05f3a2' : '#e2b86d';
                 
                 container.innerHTML += `
-                    <div class="p-5 glass-card rounded-2xl flex flex-col relative overflow-hidden group">
-                        <div class="absolute -right-6 -top-6 w-24 h-24 bg-${good.color}-500/10 rounded-full blur-xl group-hover:bg-${good.color}-500/20 transition-all"></div>
-                        
-                        <div class="flex justify-between items-start mb-4 relative z-10">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center">
-                                    <i data-lucide="${good.icon}" class="w-6 h-6 text-${good.color}-400"></i>
+                    <div class="p-5 bg-zinc-900/20 border border-zinc-900/80 rounded-2xl flex flex-col justify-between transition-all group">
+                        <div class="flex justify-between items-start w-full">
+                            <div class="flex items-center space-x-3.5">
+                                <div class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                                    <i data-lucide="${good.icon}" class="w-5 h-5" style="color: ${accentColor}"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-bold text-white leading-tight">${good.name}</h3>
-                                    <p class="text-xs text-emerald-400 font-medium">+<span class="currency-symbol">${CURRENCY_CONFIG[appState.user.currency].symbol}</span> ${formatCurrency(good.hourlyYield)} / hr</p>
+                                    <h3 class="text-sm font-bold text-white group-hover:text-zinc-100 transition-colors">${good.name}</h3>
+                                    <p class="text-xs text-[#05f3a2] font-semibold mt-0.5">+<span class="currency-symbol">${CURRENCY_CONFIG[appState.user.currency].symbol}</span> ${formatCurrency(good.hourlyYield)}<span class="text-[10px] text-zinc-500 font-medium"> / hour</span></p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between mt-auto relative z-10 pt-4 border-t border-slate-800">
-                            <div class="font-heading text-lg font-bold text-white">
-                                <span class="currency-symbol text-sm text-slate-400 mr-1">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(good.cost)}
+                        <div class="flex items-center justify-between pt-4 mt-4 border-t border-zinc-900 w-full">
+                            <div class="text-base font-bold text-white font-display">
+                                <span class="currency-symbol text-xs text-zinc-500 mr-0.5">${CURRENCY_CONFIG[appState.user.currency].symbol}</span>${formatCurrency(good.cost)}
                             </div>
-                            <button onclick="buyGood('${good.id}')" class="px-5 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition-all ${canAfford ? 'bg-white text-slate-900 hover:bg-slate-200' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}">
-                                ${canAfford ? 'Purchase' : 'Fund to Buy'}
+                            <button onclick="buyGood('${good.id}')" class="px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${canAfford ? 'bg-white text-black hover:bg-zinc-200' : 'bg-zinc-900 border border-zinc-800 text-zinc-600 cursor-not-allowed'}">
+                                ${canAfford ? 'Acquire Asset' : 'Liquidity Deficit'}
                             </button>
                         </div>
                     </div>
@@ -570,34 +545,31 @@
             lucide.createIcons();
         }
 
-        // Trading / Buying Logic
         function buyGood(goodId) {
             const good = GOODS_CATALOG.find(g => g.id === goodId);
             const state = getActiveState();
 
             if (state.balance < good.cost) {
-                showToast(`Insufficient balance. Please deposit funds.`, 'error');
+                showToast(`Insufficient vault capacity. Please complete inflow configuration.`, 'error');
                 if(appState.env === 'real') navTo('deposit');
                 return;
             }
 
-            // Deduct cost and add to inventory
             state.balance -= good.cost;
             state.myGoods.push({ ...good, purchasedAt: Date.now() });
 
             updateDashboard();
             renderMarket();
-            showToast(`Successfully purchased ${good.name}! Yield starts immediately.`, 'success');
+            showToast(`Asset allocation optimized. ${good.name} online.`, 'success');
         }
 
-        // Core Yield Engine (Runs every second, processes hourly)
         function updateCountdown() {
             const now = Date.now();
             let remainingMs = appState.nextYieldTime - now;
 
             if (remainingMs <= 0) {
                 processHourlyYield();
-                appState.nextYieldTime = now + 3600000; // Reset to 1 hour
+                appState.nextYieldTime = now + 3600000;
                 remainingMs = 3600000;
             }
 
@@ -607,7 +579,6 @@
             document.getElementById('countdown-timer').innerText = 
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
-            // Update Progress Bar
             const percent = (remainingMs / 3600000) * 100;
             document.getElementById('countdown-progress').style.width = `${percent}%`;
         }
@@ -617,23 +588,20 @@
                 const state = appState[env];
                 let earned = 0;
                 
-                state.myGoods.forEach(good => {
-                    earned += good.hourlyYield;
-                });
+                state.myGoods.forEach(good => { earned += good.hourlyYield; });
 
                 if (earned > 0) {
                     state.balance += earned;
                     
                     if (appState.env === env) {
-                        showToast(`Yield Received: +${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(earned)}`, 'success');
+                        showToast(`Yield distribution settled: +${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(earned)}`, 'success');
                         
-                        // Handle Auto-Compound (Buy the cheapest good if possible)
                         if (appState.autoCompound) {
                             const cheapest = GOODS_CATALOG[0];
                             if (state.balance >= cheapest.cost) {
                                 state.balance -= cheapest.cost;
                                 state.myGoods.push({ ...cheapest, purchasedAt: Date.now() });
-                                showToast(`Auto-Compound Active: Automatically purchased ${cheapest.name}`, 'info');
+                                showToast(`Compounding: Automatically allocated ${cheapest.name}`, 'info');
                             }
                         }
                     }
@@ -644,56 +612,49 @@
             if(document.getElementById('view-market').classList.contains('active')) renderMarket();
         }
 
-        // Auto-Compound Toggle Listener
         document.getElementById('toggle-compound').addEventListener('change', (e) => {
             appState.autoCompound = e.target.checked;
-            showToast(`Auto-Compound ${appState.autoCompound ? 'Activated' : 'Deactivated'}`, 'info');
+            showToast(`Automation system ${appState.autoCompound ? 'engaged' : 'offline'}`, 'info');
         });
 
-        // Deposit Mechanics
         function processDeposit() {
             if (appState.env !== 'real') {
-                showToast('Switch to Real Account to make actual deposits.', 'error');
+                showToast('Switch framework environment to Production Mode to configure real capital.', 'error');
                 return;
             }
 
             const inputVal = parseFloat(document.getElementById('input-deposit').value);
-            const reqKES = CURRENCY_CONFIG['KES'].minDep; // Core internal rule is KES 500
-
-            // Convert inputted localized amount back to KES conceptual base for validation
+            const reqKES = CURRENCY_CONFIG['KES'].minDep;
             const localRate = CURRENCY_CONFIG[appState.user.currency].rate;
             const inputEquivalentKES = inputVal / localRate;
 
             if (!inputVal || inputEquivalentKES < reqKES) {
-                showToast(`Minimum deposit is ${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(reqKES)}.`, 'error');
+                showToast(`Minimum required threshold is ${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(reqKES)}.`, 'error');
                 return;
             }
 
-            // Paystack Integration
             let handler = PaystackPop.setup({
                 key: PAYSTACK_KEY,
                 email: appState.user.email,
-                amount: Math.round(inputVal * 100), // Paystack operates in subunits (kobo/cents)
+                amount: Math.round(inputVal * 100),
                 currency: appState.user.currency,
-                ref: 'LI_DEP_' + Math.floor((Math.random() * 1000000000) + 1),
+                ref: 'LI_INC_' + Math.floor((Math.random() * 1000000000) + 1),
                 callback: function(response) {
-                    // Success
-                    appState.real.balance += inputEquivalentKES; // Add to internal base balance
+                    appState.real.balance += inputEquivalentKES;
                     document.getElementById('input-deposit').value = '';
-                    showToast('Deposit successful! Funds added to liquid balance.', 'success');
+                    showToast('Inflow authorized successfully. Capital active.', 'success');
                     navTo('dashboard');
                 },
                 onClose: function() {
-                    showToast('Transaction cancelled.', 'info');
+                    showToast('Inflow session aborted.', 'info');
                 }
             });
             handler.openIframe();
         }
 
-        // Withdrawal Mechanics
         function processWithdraw() {
             if (appState.env !== 'real') {
-                showToast('Switch to Real Account to process withdrawals.', 'error');
+                showToast('Switch framework environment to Production Mode to configure real liquidation.', 'error');
                 return;
             }
 
@@ -701,31 +662,30 @@
             const dest = document.getElementById('input-withdraw-dest').value;
             const state = getActiveState();
             
-            const reqKES = CURRENCY_CONFIG['KES'].minWith; // Core rule is KES 30,000
+            const reqKES = CURRENCY_CONFIG['KES'].minWith;
             const localRate = CURRENCY_CONFIG[appState.user.currency].rate;
             const inputEquivalentKES = inputVal / localRate;
 
             if (!inputVal || !dest) {
-                showToast('Please enter both amount and destination details.', 'error');
+                showToast('Liquidation parameters require numeric size and valid route registry.', 'error');
                 return;
             }
 
             if (inputEquivalentKES < reqKES) {
-                showToast(`Minimum withdrawal is ${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(reqKES)}.`, 'error');
+                showToast(`Minimum allowable settlement limit is ${CURRENCY_CONFIG[appState.user.currency].symbol} ${formatCurrency(reqKES)}.`, 'error');
                 return;
             }
 
             if (inputEquivalentKES > state.balance) {
-                showToast('Insufficient liquid balance.', 'error');
+                showToast('Target quantity exceeds liquid capacity limits.', 'error');
                 return;
             }
 
-            // Deduct and notify
             state.balance -= inputEquivalentKES;
             document.getElementById('input-withdraw').value = '';
             document.getElementById('input-withdraw-dest').value = '';
             
-            showToast('Withdrawal request received and queued for processing.', 'success');
+            showToast('Liquidation initialized. Routing through clearing infrastructure.', 'success');
             navTo('dashboard');
         }
         
